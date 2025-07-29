@@ -123,16 +123,16 @@ const StatPanel: React.FC = () => {
         <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
           <div className="flex items-center space-x-2">
             <span className="w-2 h-2 bg-pink-400 rounded-full"></span>
-            <span>Mother: {character.family.mother}</span>
+            <span>Mother: {character.family.mother.name}</span>
           </div>
           <div className="flex items-center space-x-2">
             <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
-            <span>Father: {character.family.father}</span>
+            <span>Father: {character.family.father.name}</span>
           </div>
         {character.family.siblings.length > 0 && (
           <div className="flex items-center space-x-2">
             <span className="w-2 h-2 bg-purple-400 rounded-full"></span>
-            <span>Siblings: {character.family.siblings.join(', ')}</span>
+            <span>Siblings: {character.family.siblings.map(s => s.name).join(', ')}</span>
           </div>
         )}
         </div>

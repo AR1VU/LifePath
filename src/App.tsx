@@ -1,13 +1,16 @@
 import React, { useEffect } from 'react';
-import { Home } from 'lucide-react';
+import { Home, Users, GraduationCap, Trophy, BarChart3 } from 'lucide-react';
 import { useGameStore } from './stores/gameStore';
 import StatPanel from './components/StatPanel';
 import LifeLog from './components/LifeLog';
 import ActionMenu from './components/ActionMenu';
 import Settings from './components/Settings';
+import FamilyTab from './components/FamilyTab';
+import EducationTab from './components/EducationTab';
+import AchievementsTab from './components/AchievementsTab';
 
 function App() {
-  const { settings, loadGame } = useGameStore();
+  const { settings, currentTab, setCurrentTab, loadGame } = useGameStore();
 
   useEffect(() => {
     // Register service worker for PWA
@@ -34,6 +37,28 @@ function App() {
     }
   }, [settings.darkMode]);
 
+  const tabs = [
+    { id: 'stats' as const, label: 'Stats', icon: BarChart3 },
+    { id: 'family' as const, label: 'Family', icon: Users },
+    { id: 'education' as const, label: 'Education', icon: GraduationCap },
+    { id: 'achievements' as const, label: 'Achievements', icon: Trophy },
+  ];
+
+  const renderTabContent = () => {
+    switch (currentTab) {
+      case 'stats':
+        return <StatPanel />;
+      case 'family':
+        return <FamilyTab />;
+      case 'education':
+        return <EducationTab />;
+      case 'achievements':
+        return <AchievementsTab />;
+      default:
+        return <StatPanel />;
+    }
+  };
+
   return (
     <div className="min-h-screen transition-colors duration-500 pb-24">
       <div className="container mx-auto px-4 py-6">
@@ -52,11 +77,36 @@ function App() {
           </p>
         </div>
 
+        {/* Tab Navigation */}
+        <div className="mb-8">
+          <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-2">
+            <div className="flex space-x-2">
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setCurrentTab(tab.id)}
+                    className={`flex-1 flex items-center justify-center space-x-2 py-3 px-4 rounded-xl font-semibold transition-all duration-300 ${
+                      currentTab === tab.id
+                        ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg'
+                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span className="hidden sm:inline">{tab.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
         {/* Game Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-8 min-h-[calc(100vh-240px)]">
           {/* Stats Panel */}
           <div className="xl:col-span-1">
-            <StatPanel />
+            {renderTabContent()}
           </div>
 
           {/* Life Log */}

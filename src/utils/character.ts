@@ -1,4 +1,4 @@
-import { Character } from '../types/game';
+import { Character, FamilyMember } from '../types/game';
 
 const FIRST_NAMES = {
   male: ['James', 'John', 'Robert', 'Michael', 'David', 'William', 'Richard', 'Joseph', 'Thomas', 'Christopher', 'Charles', 'Daniel', 'Matthew', 'Anthony', 'Mark', 'Donald', 'Steven', 'Paul', 'Andrew', 'Joshua'],
@@ -9,22 +9,53 @@ const LAST_NAMES = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 
 
 const COUNTRIES = ['United States', 'Canada', 'United Kingdom', 'Australia', 'Germany', 'France', 'Italy', 'Spain', 'Japan', 'South Korea', 'Brazil', 'Mexico', 'Argentina', 'India', 'China', 'Russia', 'Sweden', 'Norway', 'Denmark', 'Netherlands'];
 
+const PERSONALITIES = ['strict', 'loving', 'distant', 'supportive', 'rebellious'] as const;
+
+function generateFamilyMember(
+  relation: 'mother' | 'father' | 'sibling',
+  lastName: string,
+  characterAge: number = 0
+): FamilyMember {
+  const gender = relation === 'mother' ? 'female' : 
+                 relation === 'father' ? 'male' : 
+                 Math.random() < 0.5 ? 'male' : 'female';
+  
+  const firstName = FIRST_NAMES[gender][Math.floor(Math.random() * FIRST_NAMES[gender].length)];
+  
+  let age: number;
+  if (relation === 'mother' || relation === 'father') {
+    age = characterAge + Math.floor(Math.random() * 20) + 20; // 20-40 years older
+  } else {
+    // Sibling: can be older or younger by 1-10 years
+    const ageGap = Math.floor(Math.random() * 10) + 1;
+    age = Math.random() < 0.5 ? characterAge + ageGap : Math.max(0, characterAge - ageGap);
+  }
+  
+  return {
+    id: crypto.randomUUID(),
+    name: `${firstName} ${lastName}`,
+    relation,
+    age,
+    closeness: Math.floor(Math.random() * 40) + 60, // Start with 60-100 closeness
+    isAlive: true,
+    personality: PERSONALITIES[Math.floor(Math.random() * PERSONALITIES.length)]
+  };
+}
+
 export function generateRandomCharacter(): Character {
   const gender = Math.random() < 0.5 ? 'male' : 'female';
   const firstName = FIRST_NAMES[gender][Math.floor(Math.random() * FIRST_NAMES[gender].length)];
   const lastName = LAST_NAMES[Math.floor(Math.random() * LAST_NAMES.length)];
   
-  // Generate family
-  const motherFirstName = FIRST_NAMES.female[Math.floor(Math.random() * FIRST_NAMES.female.length)];
-  const fatherFirstName = FIRST_NAMES.male[Math.floor(Math.random() * FIRST_NAMES.male.length)];
+  // Generate family members
+  const mother = generateFamilyMember('mother', lastName, 0);
+  const father = generateFamilyMember('father', lastName, 0);
   
-  const siblings: string[] = [];
+  const siblings: FamilyMember[] = [];
   const siblingCount = Math.floor(Math.random() * 4); // 0-3 siblings
   
   for (let i = 0; i < siblingCount; i++) {
-    const siblingGender = Math.random() < 0.5 ? 'male' : 'female';
-    const siblingName = FIRST_NAMES[siblingGender][Math.floor(Math.random() * FIRST_NAMES[siblingGender].length)];
-    siblings.push(siblingName);
+    siblings.push(generateFamilyMember('sibling', lastName, 0));
   }
 
   return {
@@ -40,13 +71,21 @@ export function generateRandomCharacter(): Character {
       happiness: Math.floor(Math.random() * 50) + 50, // 50-100
     },
     family: {
-      mother: `${motherFirstName} ${lastName}`,
-      father: `${fatherFirstName} ${lastName}`,
+      mother,
+      father,
       siblings,
     },
     money: 0,
     isAlive: true,
     createdAt: new Date(),
+    education: {
+      currentLevel: 'none',
+      grades: {},
+      gpa: 0,
+      clubs: [],
+      achievements: []
+    },
+    achievements: []
   };
 }
 

@@ -44,14 +44,6 @@ const EVENT_TEMPLATES: EventTemplate[] = [
     probability: 0.1
   },
   {
-    title: 'Family Vacation',
-    description: 'Your family went on an amazing vacation to the beach!',
-    statChanges: { happiness: 10, health: 3 },
-    type: 'positive',
-    ageRange: [2, 12],
-    probability: 0.06
-  },
-  {
     title: 'Started Reading Books',
     description: 'You discovered a love for reading and spent hours at the library.',
     statChanges: { smarts: 5, happiness: 3 },
@@ -67,14 +59,6 @@ const EVENT_TEMPLATES: EventTemplate[] = [
     ageRange: [3, 12],
     probability: 0.05
   },
-  {
-    title: 'Adopted a Pet',
-    description: 'Your family adopted a cute puppy who became your loyal companion.',
-    statChanges: { happiness: 12, health: 2 },
-    type: 'positive',
-    ageRange: [2, 12],
-    probability: 0.07
-  },
 
   // Teen Events (13-17)
   {
@@ -84,14 +68,6 @@ const EVENT_TEMPLATES: EventTemplate[] = [
     type: 'positive',
     ageRange: [13, 17],
     probability: 0.15
-  },
-  {
-    title: 'Failed a Test',
-    description: 'You failed an important test and your parents were disappointed.',
-    statChanges: { smarts: -3, happiness: -8 },
-    type: 'negative',
-    ageRange: [13, 17],
-    probability: 0.12
   },
   {
     title: 'Joined Sports Team',
@@ -205,7 +181,8 @@ export function generateRandomEvent(character: Character): GameEvent | null {
     description: template.description,
     statChanges: template.statChanges,
     timestamp: new Date(),
-    type: template.type
+    type: template.type,
+    category: 'general'
   };
 }
 
