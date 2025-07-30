@@ -1,5 +1,5 @@
 import React from 'react';
-import { Moon, Sun, Save, Bell, BellOff } from 'lucide-react';
+import { Moon, Sun, Save, Bell, BellOff, Baby } from 'lucide-react';
 import { useGameStore } from '../stores/gameStore';
 
 const Settings: React.FC = () => {
@@ -8,12 +8,13 @@ const Settings: React.FC = () => {
     toggleDarkMode, 
     toggleAutoSave, 
     toggleNotifications,
+    togglePregnancy,
     saveGame,
     loadGame 
   } = useGameStore();
 
   return (
-    <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-6 space-y-6">
+    <div className="space-y-6">
       <div className="flex items-center space-x-3 mb-4">
         <div className="p-2 bg-gradient-to-br from-gray-500 to-gray-700 rounded-xl">
           <span className="text-white text-lg">⚙️</span>
@@ -88,6 +89,26 @@ const Settings: React.FC = () => {
           </button>
         </div>
 
+        <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+          <div className="flex items-center space-x-2">
+            <div className="p-2 bg-pink-100 dark:bg-pink-900/30 rounded-lg">
+              <Baby className="w-4 h-4 text-pink-600 dark:text-pink-400" />
+            </div>
+            <span className="font-semibold text-gray-700 dark:text-gray-300">Pregnancy Events</span>
+          </div>
+          <button
+            onClick={togglePregnancy}
+            className={`relative inline-flex h-7 w-12 items-center rounded-full transition-all duration-300 ${
+              settings.pregnancyEnabled ? 'bg-gradient-to-r from-pink-600 to-rose-600' : 'bg-gray-300'
+            }`}
+          >
+            <span
+              className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-lg transition-transform duration-300 ${
+                settings.pregnancyEnabled ? 'translate-x-6' : 'translate-x-1'
+              }`}
+            />
+          </button>
+        </div>
         <div className="pt-6 border-t border-gray-200/50 dark:border-gray-700/50">
           <div className="space-y-3">
             <button

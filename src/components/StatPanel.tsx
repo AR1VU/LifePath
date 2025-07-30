@@ -107,6 +107,39 @@ const StatPanel: React.FC = () => {
         })}
       </div>
 
+      {/* Special Status Indicators */}
+      {(character.isGrounded || character.hasJob || character.isPregnant) && (
+        <div className="pt-6 border-t border-gray-200/50 dark:border-gray-700/50">
+          <h4 className="font-semibold text-gray-800 dark:text-white mb-3">Status</h4>
+          <div className="space-y-2">
+            {character.isGrounded && (
+              <div className="flex items-center space-x-2 text-sm">
+                <span className="w-2 h-2 bg-red-400 rounded-full"></span>
+                <span className="text-red-600 dark:text-red-400 font-medium">
+                  Grounded until age {character.groundedUntilAge}
+                </span>
+              </div>
+            )}
+            {character.hasJob && (
+              <div className="flex items-center space-x-2 text-sm">
+                <span className="w-2 h-2 bg-green-400 rounded-full"></span>
+                <span className="text-green-600 dark:text-green-400 font-medium">
+                  Working as {character.jobTitle}
+                </span>
+              </div>
+            )}
+            {character.isPregnant && (
+              <div className="flex items-center space-x-2 text-sm">
+                <span className="w-2 h-2 bg-pink-400 rounded-full"></span>
+                <span className="text-pink-600 dark:text-pink-400 font-medium">
+                  Pregnant (due at age {character.pregnancyDueAge})
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className="pt-6 border-t border-gray-200/50 dark:border-gray-700/50">
         <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-4">
           <div className="flex items-center justify-between">
@@ -137,6 +170,28 @@ const StatPanel: React.FC = () => {
         )}
         </div>
       </div>
+
+      {/* Criminal Record */}
+      {character.criminalRecord.length > 0 && (
+        <div className="pt-6 border-t border-gray-200/50 dark:border-gray-700/50">
+          <h4 className="font-semibold text-gray-800 dark:text-white mb-3">Criminal Record</h4>
+          <div className="space-y-2 text-sm">
+            {character.criminalRecord.slice(-3).map((record) => (
+              <div key={record.id} className="flex items-center space-x-2">
+                <span className="w-2 h-2 bg-red-400 rounded-full"></span>
+                <span className="text-red-600 dark:text-red-400">
+                  {record.crime} (Age {record.age})
+                </span>
+              </div>
+            ))}
+            {character.criminalRecord.length > 3 && (
+              <p className="text-xs text-gray-500 dark:text-gray-400 italic">
+                +{character.criminalRecord.length - 3} more offenses
+              </p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

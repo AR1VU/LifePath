@@ -4,6 +4,20 @@ import { generateRandomCharacter } from '../utils/character';
 import { generateRandomEvent, applyStatChanges } from '../utils/events';
 import { generateFamilyEvent, interactWithFamily, ageFamilyMembers } from '../utils/family';
 import { generateSchoolEvent, updateEducationProgress } from '../utils/education';
+import { 
+  startDating as startDatingUtil, 
+  breakUp as breakUpUtil, 
+  cheatOnPartner as cheatUtil, 
+  giveGift as giveGiftUtil, 
+  flirtWithPartner as flirtUtil,
+  getFirstJob,
+  commitCrime,
+  tryDrugs,
+  sneakOut,
+  checkPregnancy,
+  updateGroundedStatus,
+  generateTeenagerEvent
+} from '../utils/teenager';
 import { checkAchievements } from '../utils/achievements';
 import { saveGameState, loadGameState } from '../utils/storage';
 
@@ -15,9 +29,23 @@ interface GameStore extends GameState {
   ageUp: () => void;
   setCurrentTab: (tab: GameState['currentTab']) => void;
   interactWithFamilyMember: (familyMemberId: string, action: 'talk' | 'compliment' | 'insult' | 'ask_money') => void;
+  
+  // Teenager actions
+  startDating: () => void;
+  breakUp: (relationshipId: string) => void;
+  cheatOnPartner: (relationshipId: string) => void;
+  giveGift: (relationshipId: string) => void;
+  flirtWithPartner: (relationshipId: string, flirtText: string, success: boolean, statChanges: { trust: number; attraction: number; loyalty: number }) => void;
+  getFirstJob: () => void;
+  joinGang: () => void;
+  tryDrugs: () => void;
+  sneakOut: () => void;
+  
+  // Settings
   toggleDarkMode: () => void;
   toggleAutoSave: () => void;
   toggleNotifications: () => void;
+  togglePregnancy: () => void;
   loadGame: () => void;
   saveGame: () => void;
   resetGame: () => void;
@@ -34,6 +62,7 @@ const initialState: GameState = {
     darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
     autoSave: true,
     notifications: true,
+    pregnancyEnabled: true,
   },
 };
 
@@ -80,6 +109,41 @@ export const useGameStore = create<GameStore>((set, get) => ({
     // Update education level
     updatedCharacter = updateEducationProgress(updatedCharacter);
 
+    // Check for pregnancy events
+    if (settings.pregnancyEnabled) {
+      const pregnancyResult = checkPregnancy(updatedCharacter);
+      updatedCharacter = pregnancyResult.character;
+      if (pregnancyResult.event) {
+        newEvents.push(pregnancyResult.event);
+        Object.entries(pregnancyResult.event.statChanges).forEach(([stat, change]) => {
+          if (typeof change === 'number' && change !== 0) {
+            get().addStatChange(stat as keyof Character['stats'], change);
+          }
+        });
+      }
+    }
+
+    // Handle pregnancy due
+    if (updatedCharacter.isPregnant && updatedCharacter.age >= updatedCharacter.pregnancyDueAge!) {
+      updatedCharacter = {
+        ...updatedCharacter,
+        isPregnant: false,
+        pregnancyDueAge: undefined
+      };
+      
+      const birthEvent: GameEvent = {
+        id: crypto.randomUUID(),
+        age: newAge,
+        title: 'Gave Birth',
+        description: 'You gave birth to a healthy baby! Your life has changed forever.',
+        statChanges: { happiness: 5, health: -10 },
+        timestamp: new Date(),
+        type: 'positive',
+        category: 'general'
+      };
+      newEvents.push(birthEvent);
+    }
+
     // Generate random events
     const randomEvent = generateRandomEvent(updatedCharacter);
     if (randomEvent) {
@@ -121,6 +185,18 @@ export const useGameStore = create<GameStore>((set, get) => ({
       });
     }
 
+    // Generate teenager events
+    const teenEvent = generateTeenagerEvent(updatedCharacter);
+    if (teenEvent) {
+      updatedCharacter = applyStatChanges(updatedCharacter, teenEvent.statChanges);
+      newEvents.push(teenEvent);
+
+      Object.entries(teenEvent.statChanges).forEach(([stat, change]) => {
+        if (typeof change === 'number' && change !== 0) {
+          get().addStatChange(stat as keyof Character['stats'], change);
+        }
+      });
+    }
     // Check for new achievements
     const newAchievements = checkAchievements(updatedCharacter, newEvents);
     if (newAchievements.length > 0) {
@@ -170,6 +246,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
       }
     }
 
+    // Add job income
+    if (updatedCharacter.hasJob) {
+      const income = Math.floor(Math.random() * 100) + 50; // $50-150 per year
+      updatedCharacter.money += income;
+    }
     set({
       character: updatedCharacter,
       events: newEvents,
@@ -211,6 +292,240 @@ export const useGameStore = create<GameStore>((set, get) => ({
     }
   },
 
+  // Teenager actions
+  startDating: () => {
+    const { character, events } = get();
+    if (!character || character.age < 13) return;
+
+    try {
+      const { character: updatedCharacter, event } = startDatingUtil(character);
+      
+      set({
+        character: updatedCharacter,
+        events: [...events, event]
+      });
+
+      Object.entries(event.statChanges).forEach(([stat, change]) => {
+        if (typeof change === 'number' && change !== 0) {
+          get().addStatChange(stat as keyof Character['stats'], change);
+        }
+      });
+
+      if (get().settings.autoSave) {
+        get().saveGame();
+      }
+    } catch (error) {
+      console.error('Failed to start dating:', error);
+    }
+  },
+
+  breakUp: (relationshipId) => {
+    const { character, events } = get();
+    if (!character) return;
+
+    try {
+      const { character: updatedCharacter, event } = breakUpUtil(character, relationshipId);
+      
+      set({
+        character: updatedCharacter,
+        events: [...events, event]
+      });
+
+      Object.entries(event.statChanges).forEach(([stat, change]) => {
+        if (typeof change === 'number' && change !== 0) {
+          get().addStatChange(stat as keyof Character['stats'], change);
+        }
+      });
+
+      if (get().settings.autoSave) {
+        get().saveGame();
+      }
+    } catch (error) {
+      console.error('Failed to break up:', error);
+    }
+  },
+
+  cheatOnPartner: (relationshipId) => {
+    const { character, events } = get();
+    if (!character) return;
+
+    try {
+      const { character: updatedCharacter, event } = cheatUtil(character, relationshipId);
+      
+      set({
+        character: updatedCharacter,
+        events: [...events, event]
+      });
+
+      Object.entries(event.statChanges).forEach(([stat, change]) => {
+        if (typeof change === 'number' && change !== 0) {
+          get().addStatChange(stat as keyof Character['stats'], change);
+        }
+      });
+
+      if (get().settings.autoSave) {
+        get().saveGame();
+      }
+    } catch (error) {
+      console.error('Failed to cheat:', error);
+    }
+  },
+
+  giveGift: (relationshipId) => {
+    const { character, events } = get();
+    if (!character) return;
+
+    try {
+      const { character: updatedCharacter, event } = giveGiftUtil(character, relationshipId);
+      
+      set({
+        character: updatedCharacter,
+        events: [...events, event]
+      });
+
+      Object.entries(event.statChanges).forEach(([stat, change]) => {
+        if (typeof change === 'number' && change !== 0) {
+          get().addStatChange(stat as keyof Character['stats'], change);
+        }
+      });
+
+      if (get().settings.autoSave) {
+        get().saveGame();
+      }
+    } catch (error) {
+      console.error('Failed to give gift:', error);
+    }
+  },
+
+  flirtWithPartner: (relationshipId, flirtText, success, statChanges) => {
+    const { character, events } = get();
+    if (!character) return;
+
+    try {
+      const { character: updatedCharacter, event } = flirtUtil(character, relationshipId, flirtText, success, statChanges);
+      
+      set({
+        character: updatedCharacter,
+        events: [...events, event]
+      });
+
+      Object.entries(event.statChanges).forEach(([stat, change]) => {
+        if (typeof change === 'number' && change !== 0) {
+          get().addStatChange(stat as keyof Character['stats'], change);
+        }
+      });
+
+      if (get().settings.autoSave) {
+        get().saveGame();
+      }
+    } catch (error) {
+      console.error('Failed to flirt:', error);
+    }
+  },
+
+  getFirstJob: () => {
+    const { character, events } = get();
+    if (!character || character.age < 15) return;
+
+    try {
+      const { character: updatedCharacter, event } = getFirstJob(character);
+      
+      set({
+        character: updatedCharacter,
+        events: [...events, event]
+      });
+
+      Object.entries(event.statChanges).forEach(([stat, change]) => {
+        if (typeof change === 'number' && change !== 0) {
+          get().addStatChange(stat as keyof Character['stats'], change);
+        }
+      });
+
+      if (get().settings.autoSave) {
+        get().saveGame();
+      }
+    } catch (error) {
+      console.error('Failed to get job:', error);
+    }
+  },
+
+  joinGang: () => {
+    const { character, events } = get();
+    if (!character || character.age < 13) return;
+
+    try {
+      const { character: updatedCharacter, event } = commitCrime(character);
+      
+      set({
+        character: updatedCharacter,
+        events: [...events, event]
+      });
+
+      Object.entries(event.statChanges).forEach(([stat, change]) => {
+        if (typeof change === 'number' && change !== 0) {
+          get().addStatChange(stat as keyof Character['stats'], change);
+        }
+      });
+
+      if (get().settings.autoSave) {
+        get().saveGame();
+      }
+    } catch (error) {
+      console.error('Failed to commit crime:', error);
+    }
+  },
+
+  tryDrugs: () => {
+    const { character, events } = get();
+    if (!character || character.age < 13) return;
+
+    try {
+      const { character: updatedCharacter, event } = tryDrugs(character);
+      
+      set({
+        character: updatedCharacter,
+        events: [...events, event]
+      });
+
+      Object.entries(event.statChanges).forEach(([stat, change]) => {
+        if (typeof change === 'number' && change !== 0) {
+          get().addStatChange(stat as keyof Character['stats'], change);
+        }
+      });
+
+      if (get().settings.autoSave) {
+        get().saveGame();
+      }
+    } catch (error) {
+      console.error('Failed to try drugs:', error);
+    }
+  },
+
+  sneakOut: () => {
+    const { character, events } = get();
+    if (!character || character.age < 13) return;
+
+    try {
+      const { character: updatedCharacter, event } = sneakOut(character);
+      
+      set({
+        character: updatedCharacter,
+        events: [...events, event]
+      });
+
+      Object.entries(event.statChanges).forEach(([stat, change]) => {
+        if (typeof change === 'number' && change !== 0) {
+          get().addStatChange(stat as keyof Character['stats'], change);
+        }
+      });
+
+      if (get().settings.autoSave) {
+        get().saveGame();
+      }
+    } catch (error) {
+      console.error('Failed to sneak out:', error);
+    }
+  },
   addStatChange: (stat, change) => {
     set(state => ({
       statChanges: [...state.statChanges, {
@@ -253,6 +568,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
     get().saveGame();
   },
 
+  togglePregnancy: () => {
+    set(state => ({
+      settings: { ...state.settings, pregnancyEnabled: !state.settings.pregnancyEnabled }
+    }));
+    get().saveGame();
+  },
   loadGame: () => {
     const savedState = loadGameState();
     if (savedState) {

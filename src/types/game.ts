@@ -9,6 +9,7 @@ export interface Character {
     smarts: number;
     looks: number;
     happiness: number;
+    reputation: number;
   };
   family: {
     mother: FamilyMember;
@@ -26,6 +27,38 @@ export interface Character {
     achievements: string[];
   };
   achievements: Achievement[];
+  relationships: Relationship[];
+  criminalRecord: CriminalRecord[];
+  riskMeter: number; // 0-100, hidden from player
+  isGrounded: boolean;
+  groundedUntilAge: number;
+  hasJob: boolean;
+  jobTitle?: string;
+  isPregnant?: boolean;
+  pregnancyDueAge?: number;
+}
+
+export interface Relationship {
+  id: string;
+  name: string;
+  type: 'dating' | 'ex' | 'crush';
+  age: number;
+  stats: {
+    trust: number; // 0-100
+    attraction: number; // 0-100
+    loyalty: number; // 0-100
+  };
+  startedAt: number; // character age when relationship started
+  endedAt?: number; // character age when relationship ended
+  isActive: boolean;
+}
+
+export interface CriminalRecord {
+  id: string;
+  crime: string;
+  age: number;
+  punishment: string;
+  timestamp: Date;
 }
 
 export interface FamilyMember {
@@ -69,6 +102,7 @@ export interface GameState {
     darkMode: boolean;
     autoSave: boolean;
     notifications: boolean;
+    pregnancyEnabled: boolean;
   };
 }
 

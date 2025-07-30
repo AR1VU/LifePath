@@ -26,7 +26,7 @@ const LifeLog: React.FC = () => {
   };
 
   return (
-    <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-8 h-full flex flex-col">
+    <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-8 h-[600px] flex flex-col">
       <div className="flex items-center space-x-3 mb-6">
         <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl">
           <span className="text-white text-lg">📖</span>

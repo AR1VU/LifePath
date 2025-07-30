@@ -1,18 +1,26 @@
 import React from 'react';
-import { Play, RotateCcw, Calendar, Skull } from 'lucide-react';
+import { Play, RotateCcw, Calendar, Skull, Heart, Briefcase, Users, Cigarette, Moon } from 'lucide-react';
 import { useGameStore } from '../stores/gameStore';
 
 const ActionMenu: React.FC = () => {
-  const { character, isPlaying, startNewLife, ageUp, resetGame } = useGameStore();
+  const { 
+    character, 
+    isPlaying, 
+    startNewLife, 
+    resetGame,
+    startDating,
+    getFirstJob,
+    joinGang,
+    tryDrugs,
+    sneakOut
+  } = useGameStore();
 
-  const handleAgeUp = () => {
-    if (character?.isAlive) {
-      ageUp();
-    }
-  };
+  const isTeenager = character && character.age >= 13 && character.age <= 17;
+  const canWork = character && character.age >= 15 && !character.hasJob;
+  const hasActiveRelationship = character?.relationships.some(r => r.isActive);
 
   return (
-    <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-6 space-y-6">
+    <div className="space-y-6">
       <div className="flex items-center space-x-3 mb-4">
         <div className="p-2 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl">
           <span className="text-white text-lg">⚡</span>
@@ -45,6 +53,60 @@ const ActionMenu: React.FC = () => {
               </p>
             </div>
 
+            {/* Teenager Actions */}
+            {isTeenager && character?.isAlive && (
+              <div className="space-y-3">
+                <h4 className="font-bold text-gray-800 dark:text-white text-sm uppercase tracking-wide">
+                  Teen Actions
+                </h4>
+                
+                <div className="grid grid-cols-2 gap-3">
+                  {!hasActiveRelationship && (
+                    <button
+                      onClick={startDating}
+                      className="flex items-center justify-center space-x-2 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 text-sm"
+                    >
+                      <Heart className="w-4 h-4" />
+                      <span>Start Dating</span>
+                    </button>
+                  )}
+                  
+                  {canWork && (
+                    <button
+                      onClick={getFirstJob}
+                      className="flex items-center justify-center space-x-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 text-sm"
+                    >
+                      <Briefcase className="w-4 h-4" />
+                      <span>Get Job</span>
+                    </button>
+                  )}
+                  
+                  <button
+                    onClick={joinGang}
+                    className="flex items-center justify-center space-x-2 bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-600 hover:to-rose-600 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 text-sm"
+                  >
+                    <Users className="w-4 h-4" />
+                    <span>Join Gang</span>
+                  </button>
+                  
+                  <button
+                    onClick={tryDrugs}
+                    className="flex items-center justify-center space-x-2 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 text-sm"
+                  >
+                    <Cigarette className="w-4 h-4" />
+                    <span>Try Drugs</span>
+                  </button>
+                  
+                  <button
+                    onClick={sneakOut}
+                    className="flex items-center justify-center space-x-2 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 text-sm col-span-2"
+                  >
+                    <Moon className="w-4 h-4" />
+                    <span>Sneak Out</span>
+                  </button>
+                </div>
+              </div>
+            )}
             {!character?.isAlive && (
               <div className="bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20 border border-red-200/50 dark:border-red-800/50 rounded-xl p-5">
                 <div className="flex items-center justify-center space-x-3 text-red-600 dark:text-red-400">

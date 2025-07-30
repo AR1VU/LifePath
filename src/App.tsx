@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Home, Users, GraduationCap, Trophy, BarChart3 } from 'lucide-react';
+import { Home, Users, GraduationCap, Trophy, BarChart3, Menu, X } from 'lucide-react';
 import { useGameStore } from './stores/gameStore';
 import StatPanel from './components/StatPanel';
 import LifeLog from './components/LifeLog';
@@ -8,9 +8,11 @@ import Settings from './components/Settings';
 import FamilyTab from './components/FamilyTab';
 import EducationTab from './components/EducationTab';
 import AchievementsTab from './components/AchievementsTab';
+import RelationshipsTab from './components/RelationshipsTab';
 
 function App() {
   const { settings, currentTab, setCurrentTab, loadGame } = useGameStore();
+  const [showMenu, setShowMenu] = React.useState(false);
 
   useEffect(() => {
     // Register service worker for PWA
@@ -41,6 +43,7 @@ function App() {
     { id: 'stats' as const, label: 'Stats', icon: BarChart3 },
     { id: 'family' as const, label: 'Family', icon: Users },
     { id: 'education' as const, label: 'Education', icon: GraduationCap },
+    { id: 'relationships' as const, label: 'Love', icon: () => <span className="text-sm">💕</span> },
     { id: 'achievements' as const, label: 'Achievements', icon: Trophy },
   ];
 
@@ -52,6 +55,8 @@ function App() {
         return <FamilyTab />;
       case 'education':
         return <EducationTab />;
+      case 'relationships':
+        return <RelationshipsTab />;
       case 'achievements':
         return <AchievementsTab />;
       default:
@@ -75,6 +80,24 @@ function App() {
           <p className="text-lg text-gray-600 dark:text-gray-400 font-medium">
             Live your digital life, one year at a time
           </p>
+          
+          {/* Menu Button */}
+          <button
+            onClick={() => setShowMenu(!showMenu)}
+            className="absolute top-0 right-0 p-3 bg-gradient-to-br from-gray-500 to-gray-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+          >
+            {showMenu ? <X className="w-6 h-6 text-white" /> : <Menu className="w-6 h-6 text-white" />}
+          </button>
+          
+          {/* Popup Menu */}
+          {showMenu && (
+            <div className="absolute top-16 right-0 z-50 w-80">
+              <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-6 space-y-6">
+                <ActionMenu />
+                <Settings />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Tab Navigation */}
@@ -103,21 +126,15 @@ function App() {
         </div>
 
         {/* Game Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-8 min-h-[calc(100vh-240px)]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 min-h-[calc(100vh-240px)]">
           {/* Stats Panel */}
-          <div className="xl:col-span-1">
+          <div className="lg:col-span-1">
             {renderTabContent()}
           </div>
 
           {/* Life Log */}
-          <div className="lg:col-span-1 xl:col-span-2">
+          <div className="lg:col-span-1">
             <LifeLog />
-          </div>
-
-          {/* Right Sidebar */}
-          <div className="xl:col-span-1 space-y-6">
-            <ActionMenu />
-            <Settings />
           </div>
         </div>
 

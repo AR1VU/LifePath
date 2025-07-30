@@ -69,6 +69,7 @@ export function generateRandomCharacter(): Character {
       smarts: Math.floor(Math.random() * 50) + 50, // 50-100
       looks: Math.floor(Math.random() * 50) + 50, // 50-100
       happiness: Math.floor(Math.random() * 50) + 50, // 50-100
+      reputation: Math.floor(Math.random() * 30) + 70, // 70-100 (start with good reputation)
     },
     family: {
       mother,
@@ -85,7 +86,14 @@ export function generateRandomCharacter(): Character {
       clubs: [],
       achievements: []
     },
-    achievements: []
+    achievements: [],
+    relationships: [],
+    criminalRecord: [],
+    riskMeter: 0,
+    isGrounded: false,
+    groundedUntilAge: 0,
+    hasJob: false,
+    isPregnant: false
   };
 }
 
