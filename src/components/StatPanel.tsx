@@ -145,7 +145,7 @@ const StatPanel: React.FC = () => {
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Net Worth</span>
             <span className="text-lg font-bold text-green-600 dark:text-green-400">
-              ${character.money.toLocaleString()}
+              ${(character.money ?? 0).toLocaleString()}
             </span>
           </div>
         </div>
