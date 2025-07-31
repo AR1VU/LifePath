@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, Brain, Smile, Eye } from 'lucide-react';
+import { Heart, Brain, Smile, Eye, Activity, Shield, Zap } from 'lucide-react';
 import { useGameStore } from '../stores/gameStore';
 import { getStatColor, getStatBarColor } from '../utils/character';
 
@@ -11,10 +11,23 @@ const StatPanel: React.FC = () => {
   const getStatIcon = (stat: string) => {
     switch (stat) {
       case 'health': return Heart;
+      case 'physicalHealth': return Activity;
+      case 'mentalHealth': return Brain;
+      case 'addictions': return Zap;
       case 'smarts': return Brain;
       case 'happiness': return Smile;
       case 'looks': return Eye;
+      case 'reputation': return Shield;
       default: return Heart;
+    }
+  };
+
+  const getStatDisplayName = (stat: string) => {
+    switch (stat) {
+      case 'physicalHealth': return 'Physical Health';
+      case 'mentalHealth': return 'Mental Health';
+      case 'addictions': return 'Addictions';
+      default: return stat.charAt(0).toUpperCase() + stat.slice(1);
     }
   };
 
@@ -105,6 +118,52 @@ const StatPanel: React.FC = () => {
             </div>
           );
         })}
+      </div>
+
+      {/* Health Status */}
+      {character.diseases.length > 0 && (
+        <div className="pt-6 border-t border-gray-200/50 dark:border-gray-700/50">
+          <h4 className="font-semibold text-gray-800 dark:text-white mb-3">Health Conditions</h4>
+          <div className="space-y-2">
+            {character.diseases.slice(0, 3).map((disease) => (
+              <div key={disease.id} className="flex items-center space-x-2 text-sm">
+                <span className={`w-2 h-2 rounded-full ${
+                  disease.severity === 'terminal' ? 'bg-red-500' :
+                  disease.severity === 'severe' ? 'bg-orange-500' :
+                  disease.severity === 'moderate' ? 'bg-yellow-500' :
+                  'bg-blue-500'
+                }`}></span>
+                <span className="text-gray-600 dark:text-gray-400 font-medium">
+                  {disease.name} ({disease.severity})
+                </span>
+              </div>
+            ))}
+            {character.diseases.length > 3 && (
+              <p className="text-xs text-gray-500 dark:text-gray-400 italic">
+                +{character.diseases.length - 3} more conditions
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Insurance Status */}
+      <div className="pt-6 border-t border-gray-200/50 dark:border-gray-700/50">
+        <h4 className="font-semibold text-gray-800 dark:text-white mb-3">Insurance</h4>
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-4">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium text-gray-600 dark:text-gray-400 capitalize">
+              {character.insurance.type} Insurance
+            </span>
+            <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
+              {character.insurance.coverage}%
+            </span>
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-400">
+            Premium: ${character.insurance.monthlyPremium}/month • 
+            Deductible: ${character.insurance.deductible.toLocaleString()}
+          </div>
+        </div>
       </div>
 
       {/* Special Status Indicators */}
@@ -230,11 +289,11 @@ const StatPanel: React.FC = () => {
       </div>
 
       {/* Criminal Record */}
-      {character.criminalRecord.length > 0 && (
+      {Array.isArray(character.criminalRecord) && character.criminalRecord.length > 0 && (
         <div className="pt-6 border-t border-gray-200/50 dark:border-gray-700/50">
           <h4 className="font-semibold text-gray-800 dark:text-white mb-3">Criminal Record</h4>
           <div className="space-y-2 text-sm">
-            {character.criminalRecord.slice(-3).map((record) => (
+            {character.criminalRecord?.slice(-3).map((record) => (
               <div key={record.id} className="flex items-center space-x-2">
                 <span className="w-2 h-2 bg-red-400 rounded-full"></span>
                 <span className="text-red-600 dark:text-red-400">

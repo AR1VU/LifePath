@@ -6,7 +6,12 @@ const LifeLog: React.FC = () => {
   const { events, startNewLife } = useGameStore();
   const logEndRef = useRef<HTMLDivElement>(null);
 
-  // Removed auto-scroll functionality
+  // Auto-scroll to bottom when new events are added
+  useEffect(() => {
+    if (logEndRef.current) {
+      logEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [events]);
 
   const getEventTypeColor = (type: string) => {
     switch (type) {
@@ -33,7 +38,7 @@ const LifeLog: React.FC = () => {
         <h3 className="text-2xl font-bold text-gray-800 dark:text-white">Life Story</h3>
       </div>
       
-      <div className="flex-1 overflow-y-auto space-y-4 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 pr-2">
+      <div className="flex-1 overflow-y-auto space-y-4 custom-scrollbar pr-2">
         {events.length === 0 ? (
           <div className="text-center py-16">
             <div className="w-24 h-24 mx-auto bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 rounded-full flex items-center justify-center mb-4">

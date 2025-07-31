@@ -6,6 +6,9 @@ export interface Character {
   country: string;
   stats: {
     health: number;
+    physicalHealth: number;
+    mentalHealth: number;
+    addictions: number;
     smarts: number;
     looks: number;
     happiness: number;
@@ -18,6 +21,8 @@ export interface Character {
     siblings: FamilyMember[];
   };
   isAlive: boolean;
+  deathCause?: string;
+  deathAge?: number;
   createdAt: Date;
   education: {
     currentLevel: EducationLevel;
@@ -40,6 +45,10 @@ export interface Character {
   workExperience?: number;
   isPregnant?: boolean;
   pregnancyDueAge?: number;
+  diseases: Disease[];
+  insurance: Insurance;
+  genetics: Genetics;
+  lifeSummary?: LifeSummary;
   college?: {
     isEnrolled: boolean;
     major?: string;
@@ -56,6 +65,58 @@ export interface Character {
     monthlyExpenses: number;
     assets: Asset[];
   };
+}
+
+export interface Disease {
+  id: string;
+  name: string;
+  type: 'physical' | 'mental' | 'addiction' | 'std';
+  severity: 'mild' | 'moderate' | 'severe' | 'terminal';
+  contractedAt: number; // age when contracted
+  isCurable: boolean;
+  isFatal: boolean;
+  treatmentCost: number;
+  statEffects: Partial<Character['stats']>;
+  description: string;
+  symptoms: string[];
+}
+
+export interface Insurance {
+  type: 'government' | 'private' | 'uninsured';
+  coverage: number; // 0-100 percentage
+  monthlyPremium: number;
+  deductible: number;
+}
+
+export interface Genetics {
+  healthPredisposition: number; // 0-100, inherited from parents
+  mentalHealthPredisposition: number;
+  addictionPredisposition: number;
+  longevityGenes: number;
+  diseaseResistance: { [disease: string]: number };
+}
+
+export interface LifeSummary {
+  totalYearsLived: number;
+  causeOfDeath: string;
+  totalWealth: number;
+  jobsHeld: string[];
+  relationshipsCount: number;
+  childrenCount: number;
+  crimesCommitted: number;
+  achievementsUnlocked: number;
+  legacyScore: number;
+  keyEvents: GameEvent[];
+  finalStats: Character['stats'];
+}
+
+export interface HospitalVisit {
+  id: string;
+  type: 'checkup' | 'surgery' | 'therapy' | 'rehab' | 'emergency';
+  cost: number;
+  success: boolean;
+  description: string;
+  age: number;
 }
 
 export interface Asset {

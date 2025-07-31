@@ -1,9 +1,10 @@
 import { create } from 'zustand';
-import { GameState, Character, GameEvent, StatChange, FamilyMember } from '../types/game';
+import { GameState, Character, GameEvent, StatChange, FamilyMember, Disease } from '../types/game';
 import { generateRandomCharacter } from '../utils/character';
 import { generateRandomEvent, applyStatChanges } from '../utils/events';
 import { generateFamilyEvent, interactWithFamily, ageFamilyMembers } from '../utils/family';
 import { generateSchoolEvent, updateEducationProgress } from '../utils/education';
+import { generateRandomDisease, checkForDeath, generateLifeSummary, generateFuneralEvents } from '../utils/health';
 import { 
   startDating as startDatingUtil, 
   breakUp as breakUpUtil, 
@@ -27,7 +28,7 @@ interface GameStore extends GameState {
   // Actions
   startNewLife: () => void;
   ageUp: () => void;
-  setCurrentTab: (tab: GameState['currentTab']) => void;
+  setCurrentTab: (tab: GameState['currentTab'] | 'health') => void;
   interactWithFamilyMember: (familyMemberId: string, action: 'talk' | 'compliment' | 'insult' | 'ask_money') => void;
   
   // Teenager actions
@@ -51,6 +52,8 @@ interface GameStore extends GameState {
   resetGame: () => void;
   addStatChange: (stat: keyof Character['stats'], change: number) => void;
   clearOldStatChanges: () => void;
+  setCharacter: (character: Character) => void;
+  addEvent: (event: GameEvent) => void;
 }
 
 const initialState: GameState = {
@@ -108,6 +111,80 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     // Update education level
     updatedCharacter = updateEducationProgress(updatedCharacter);
+
+    // Check for new diseases
+    const newDisease = generateRandomDisease(updatedCharacter);
+    if (newDisease) {
+      updatedCharacter = {
+        ...updatedCharacter,
+        diseases: [...updatedCharacter.diseases, newDisease],
+        stats: {
+          ...updatedCharacter.stats,
+          ...Object.fromEntries(
+            Object.entries(newDisease.statEffects).map(([stat, change]) => [
+              stat,
+              Math.max(0, Math.min(100, updatedCharacter.stats[stat as keyof Character['stats']] + (change as number)))
+            ])
+          )
+        }
+      };
+
+      const diseaseEvent: GameEvent = {
+        id: crypto.randomUUID(),
+        age: newAge,
+        title: `Diagnosed with ${newDisease.name}`,
+        description: `You were diagnosed with ${newDisease.name}. ${newDisease.description}`,
+        statChanges: newDisease.statEffects,
+        timestamp: new Date(),
+        type: 'negative',
+        category: 'general'
+      };
+      newEvents.push(diseaseEvent);
+
+      Object.entries(newDisease.statEffects).forEach(([stat, change]) => {
+        if (typeof change === 'number' && change !== 0) {
+          get().addStatChange(stat as keyof Character['stats'], change);
+        }
+      });
+    }
+
+    // Check for death
+    const deathCheck = checkForDeath(updatedCharacter);
+    if (deathCheck.isDead) {
+      updatedCharacter = {
+        ...updatedCharacter,
+        isAlive: false,
+        deathCause: deathCheck.cause,
+        deathAge: newAge,
+        lifeSummary: generateLifeSummary(updatedCharacter, newEvents)
+      };
+
+      const deathEvent: GameEvent = {
+        id: crypto.randomUUID(),
+        age: newAge,
+        title: 'Died',
+        description: `Your life has come to an end. Cause of death: ${deathCheck.cause}`,
+        statChanges: {},
+        timestamp: new Date(),
+        type: 'negative',
+        category: 'general'
+      };
+      newEvents.push(deathEvent);
+
+      // Add funeral events
+      const funeralEvents = generateFuneralEvents(updatedCharacter);
+      newEvents.push(...funeralEvents);
+
+      set({
+        character: updatedCharacter,
+        events: newEvents,
+      });
+
+      if (settings.autoSave) {
+        get().saveGame();
+      }
+      return;
+    }
 
     // Check for pregnancy events
     if (settings.pregnancyEnabled) {
@@ -221,27 +298,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
       });
     }
 
-    // Check if character dies (very low health)
-    if (updatedCharacter.stats.health <= 0) {
-      updatedCharacter.isAlive = false;
-      const deathEvent: GameEvent = {
-        id: crypto.randomUUID(),
-        age: newAge,
-        title: 'Died',
-        description: 'Your life has come to an end. Rest in peace.',
-        statChanges: {},
-        timestamp: new Date(),
-        type: 'negative',
-        category: 'general'
-      };
-      newEvents.push(deathEvent);
-    }
-
     // Natural aging effects
     if (newAge > 40) {
       const agingChange = Math.floor(Math.random() * 2);
       if (agingChange > 0) {
-        updatedCharacter.stats.health = Math.max(0, updatedCharacter.stats.health - agingChange);
+        updatedCharacter.stats.physicalHealth = Math.max(0, updatedCharacter.stats.physicalHealth - agingChange);
         updatedCharacter.stats.looks = Math.max(0, updatedCharacter.stats.looks - agingChange);
       }
     }
@@ -258,6 +319,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (updatedCharacter.college?.isEnrolled) {
       const monthlyTuition = (updatedCharacter.college.tuition || 40000) / 12;
       updatedCharacter.stats.money = Math.max(0, updatedCharacter.stats.money - monthlyTuition);
+    }
+
+    // Insurance premiums
+    if (updatedCharacter.insurance.monthlyPremium > 0) {
+      updatedCharacter.stats.money = Math.max(0, updatedCharacter.stats.money - updatedCharacter.insurance.monthlyPremium);
     }
 
     set({

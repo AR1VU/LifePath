@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Home, Users, GraduationCap, Trophy, BarChart3, Menu, X } from 'lucide-react';
+import { Home, Users, GraduationCap, Trophy, BarChart3, Menu, X, Heart } from 'lucide-react';
 import { useGameStore } from './stores/gameStore';
 import StatPanel from './components/StatPanel';
 import LifeLog from './components/LifeLog';
@@ -10,6 +10,7 @@ import EducationTab from './components/EducationTab';
 import AchievementsTab from './components/AchievementsTab';
 import RelationshipsTab from './components/RelationshipsTab';
 import CareerTab from './components/CareerTab';
+import HealthTab from './components/HealthTab';
 
 function App() {
   const { settings, currentTab, setCurrentTab, loadGame } = useGameStore();
@@ -42,6 +43,7 @@ function App() {
 
   const tabs = [
     { id: 'stats' as const, label: 'Stats', icon: BarChart3 },
+    { id: 'health' as const, label: 'Health', icon: Heart },
     { id: 'family' as const, label: 'Family', icon: Users },
     { id: 'education' as const, label: 'Education', icon: GraduationCap },
     { id: 'career' as const, label: 'Career', icon: () => <span className="text-sm">💼</span> },
@@ -53,6 +55,8 @@ function App() {
     switch (currentTab) {
       case 'stats':
         return <StatPanel />;
+      case 'health':
+        return <HealthTab />;
       case 'family':
         return <FamilyTab />;
       case 'education':

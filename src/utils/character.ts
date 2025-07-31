@@ -11,6 +11,21 @@ const COUNTRIES = ['United States', 'Canada', 'United Kingdom', 'Australia', 'Ge
 
 const PERSONALITIES = ['strict', 'loving', 'distant', 'supportive', 'rebellious'] as const;
 
+function generateGenetics(): Character['genetics'] {
+  return {
+    healthPredisposition: Math.floor(Math.random() * 50) + 50,
+    mentalHealthPredisposition: Math.floor(Math.random() * 50) + 50,
+    addictionPredisposition: Math.floor(Math.random() * 30) + 10,
+    longevityGenes: Math.floor(Math.random() * 40) + 60,
+    diseaseResistance: {
+      cancer: Math.floor(Math.random() * 50) + 25,
+      heartDisease: Math.floor(Math.random() * 50) + 25,
+      diabetes: Math.floor(Math.random() * 50) + 25,
+      mentalIllness: Math.floor(Math.random() * 50) + 25
+    }
+  };
+}
+
 function generateFamilyMember(
   relation: 'mother' | 'father' | 'sibling',
   lastName: string,
@@ -58,6 +73,8 @@ export function generateRandomCharacter(): Character {
     siblings.push(generateFamilyMember('sibling', lastName, 0));
   }
 
+  const genetics = generateGenetics();
+
   return {
     id: crypto.randomUUID(),
     name: `${firstName} ${lastName}`,
@@ -66,6 +83,9 @@ export function generateRandomCharacter(): Character {
     country: COUNTRIES[Math.floor(Math.random() * COUNTRIES.length)],
     stats: {
       health: Math.floor(Math.random() * 50) + 50, // 50-100
+      physicalHealth: Math.floor(Math.random() * 30) + 70, // 70-100
+      mentalHealth: Math.floor(Math.random() * 30) + 70, // 70-100
+      addictions: 0, // Start with no addictions
       smarts: Math.floor(Math.random() * 50) + 50, // 50-100
       looks: Math.floor(Math.random() * 50) + 50, // 50-100
       happiness: Math.floor(Math.random() * 50) + 50, // 50-100
@@ -94,6 +114,14 @@ export function generateRandomCharacter(): Character {
     groundedUntilAge: 0,
     hasJob: false,
     isPregnant: false,
+    diseases: [],
+    insurance: {
+      type: 'government',
+      coverage: 60,
+      monthlyPremium: 0,
+      deductible: 1000
+    },
+    genetics,
     finances: {
       savings: 0,
       debt: 0,
