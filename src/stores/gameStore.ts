@@ -248,9 +248,18 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     // Add job income
     if (updatedCharacter.hasJob) {
-      const income = Math.floor(Math.random() * 100) + 50; // $50-150 per year
-      updatedCharacter.money += income;
+      const monthlyIncome = Math.floor((updatedCharacter.salary || 30000) / 12);
+      const expenses = updatedCharacter.finances?.monthlyExpenses || 200;
+      const netIncome = monthlyIncome - expenses;
+      updatedCharacter.stats.money = Math.max(0, updatedCharacter.stats.money + netIncome);
     }
+
+    // College expenses
+    if (updatedCharacter.college?.isEnrolled) {
+      const monthlyTuition = (updatedCharacter.college.tuition || 40000) / 12;
+      updatedCharacter.stats.money = Math.max(0, updatedCharacter.stats.money - monthlyTuition);
+    }
+
     set({
       character: updatedCharacter,
       events: newEvents,
@@ -599,5 +608,15 @@ export const useGameStore = create<GameStore>((set, get) => ({
       statChanges: [],
     });
     get().saveGame();
+  },
+
+  setCharacter: (character) => {
+    set({ character });
+  },
+
+  addEvent: (event) => {
+    set(state => ({
+      events: [...state.events, event]
+    }));
   },
 }));

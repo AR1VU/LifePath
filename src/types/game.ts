@@ -10,13 +10,13 @@ export interface Character {
     looks: number;
     happiness: number;
     reputation: number;
+    money: number;
   };
   family: {
     mother: FamilyMember;
     father: FamilyMember;
     siblings: FamilyMember[];
   };
-  money: number;
   isAlive: boolean;
   createdAt: Date;
   education: {
@@ -34,8 +34,54 @@ export interface Character {
   groundedUntilAge: number;
   hasJob: boolean;
   jobTitle?: string;
+  jobLevel?: number;
+  jobPerformance?: number;
+  salary?: number;
+  workExperience?: number;
   isPregnant?: boolean;
   pregnancyDueAge?: number;
+  college?: {
+    isEnrolled: boolean;
+    major?: string;
+    year?: number;
+    gpa?: number;
+    tuition?: number;
+    scholarships?: number;
+    loans?: number;
+  };
+  finances?: {
+    savings: number;
+    debt: number;
+    investments: number;
+    monthlyExpenses: number;
+    assets: Asset[];
+  };
+}
+
+export interface Asset {
+  id: string;
+  name: string;
+  type: 'car' | 'house' | 'gadget' | 'subscription';
+  value: number;
+  monthlyFee?: number;
+  purchasedAt: number;
+}
+
+export interface Job {
+  id: string;
+  title: string;
+  category: 'entry' | 'skilled' | 'professional' | 'executive';
+  requirements: {
+    education?: EducationLevel;
+    experience?: number;
+    stats?: Partial<Character['stats']>;
+  };
+  salary: {
+    min: number;
+    max: number;
+  };
+  description: string;
+  careerPath?: string[];
 }
 
 export interface Relationship {
@@ -97,7 +143,7 @@ export interface GameState {
   character: Character | null;
   events: GameEvent[];
   isPlaying: boolean;
-  currentTab: 'stats' | 'family' | 'education' | 'achievements';
+  currentTab: 'stats' | 'family' | 'education' | 'career' | 'relationships' | 'achievements';
   settings: {
     darkMode: boolean;
     autoSave: boolean;

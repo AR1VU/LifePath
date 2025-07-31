@@ -141,15 +141,73 @@ const StatPanel: React.FC = () => {
       )}
 
       <div className="pt-6 border-t border-gray-200/50 dark:border-gray-700/50">
-        <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-4">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Net Worth</span>
-            <span className="text-lg font-bold text-green-600 dark:text-green-400">
-              ${(character.money ?? 0).toLocaleString()}
-            </span>
+        <h4 className="font-semibold text-gray-800 dark:text-white mb-3">Financial Overview</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Cash</span>
+              <span className="text-lg font-bold text-green-600 dark:text-green-400">
+                ${character.stats.money.toLocaleString()}
+              </span>
+            </div>
           </div>
+          {character.finances?.debt && character.finances.debt > 0 && (
+            <div className="bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20 rounded-xl p-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Debt</span>
+                <span className="text-lg font-bold text-red-600 dark:text-red-400">
+                  ${character.finances.debt.toLocaleString()}
+                </span>
+              </div>
+            </div>
+          )}
+          {character.hasJob && (
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Annual Salary</span>
+                <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
+                  ${(character.salary || 0).toLocaleString()}
+                </span>
+              </div>
+            </div>
+          )}
+          {character.finances?.savings && character.finances.savings > 0 && (
+            <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl p-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Savings</span>
+                <span className="text-lg font-bold text-purple-600 dark:text-purple-400">
+                  ${character.finances.savings.toLocaleString()}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Career Information */}
+      {character.hasJob && (
+        <div className="pt-6 border-t border-gray-200/50 dark:border-gray-700/50">
+          <h4 className="font-semibold text-gray-800 dark:text-white mb-3">Career</h4>
+          <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+            <div className="flex items-center space-x-2">
+              <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
+              <span>Job: {character.jobTitle}</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="w-2 h-2 bg-green-400 rounded-full"></span>
+              <span>Level: {character.jobLevel || 1}</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="w-2 h-2 bg-yellow-400 rounded-full"></span>
+              <span>Performance: {character.jobPerformance || 50}%</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="w-2 h-2 bg-purple-400 rounded-full"></span>
+              <span>Experience: {character.workExperience || 0} years</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="pt-6 border-t border-gray-200/50 dark:border-gray-700/50">
         <h4 className="font-semibold text-gray-800 dark:text-white mb-3">Family</h4>

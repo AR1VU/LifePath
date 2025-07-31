@@ -260,7 +260,10 @@ export function getFirstJob(character: Character): { character: Character; event
     ...character,
     hasJob: true,
     jobTitle,
-    money: character.money + 50 // Starting bonus
+    stats: {
+      ...character.stats,
+      money: character.stats.money + 50 // Starting bonus
+    }
   };
 
   const event: GameEvent = {

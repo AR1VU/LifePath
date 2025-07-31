@@ -9,6 +9,7 @@ import FamilyTab from './components/FamilyTab';
 import EducationTab from './components/EducationTab';
 import AchievementsTab from './components/AchievementsTab';
 import RelationshipsTab from './components/RelationshipsTab';
+import CareerTab from './components/CareerTab';
 
 function App() {
   const { settings, currentTab, setCurrentTab, loadGame } = useGameStore();
@@ -43,6 +44,7 @@ function App() {
     { id: 'stats' as const, label: 'Stats', icon: BarChart3 },
     { id: 'family' as const, label: 'Family', icon: Users },
     { id: 'education' as const, label: 'Education', icon: GraduationCap },
+    { id: 'career' as const, label: 'Career', icon: () => <span className="text-sm">💼</span> },
     { id: 'relationships' as const, label: 'Love', icon: () => <span className="text-sm">💕</span> },
     { id: 'achievements' as const, label: 'Achievements', icon: Trophy },
   ];
@@ -55,6 +57,8 @@ function App() {
         return <FamilyTab />;
       case 'education':
         return <EducationTab />;
+      case 'career':
+        return <CareerTab />;
       case 'relationships':
         return <RelationshipsTab />;
       case 'achievements':
@@ -84,14 +88,14 @@ function App() {
           {/* Menu Button */}
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="absolute top-0 right-0 p-3 bg-gradient-to-br from-gray-500 to-gray-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            className="absolute top-6 right-6 p-3 bg-gradient-to-br from-gray-500 to-gray-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
           >
             {showMenu ? <X className="w-6 h-6 text-white" /> : <Menu className="w-6 h-6 text-white" />}
           </button>
           
           {/* Popup Menu */}
           {showMenu && (
-            <div className="absolute top-16 right-0 z-50 w-80">
+            <div className="absolute top-20 right-6 z-50 w-80">
               <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-6 space-y-6">
                 <ActionMenu />
                 <Settings />

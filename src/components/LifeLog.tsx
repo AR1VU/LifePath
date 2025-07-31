@@ -1,13 +1,12 @@
 import React, { useEffect, useRef } from 'react';
+import { Play } from 'lucide-react';
 import { useGameStore } from '../stores/gameStore';
 
 const LifeLog: React.FC = () => {
-  const { events } = useGameStore();
+  const { events, startNewLife } = useGameStore();
   const logEndRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    logEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [events]);
+  // Removed auto-scroll functionality
 
   const getEventTypeColor = (type: string) => {
     switch (type) {
@@ -46,6 +45,13 @@ const LifeLog: React.FC = () => {
             <p className="text-gray-400 dark:text-gray-500 text-sm mt-2">
               Start a new life to begin your journey!
             </p>
+            <button
+              onClick={startNewLife}
+              className="mt-6 flex items-center justify-center space-x-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg mx-auto"
+            >
+              <Play className="w-5 h-5" />
+              <span>Start New Life</span>
+            </button>
           </div>
         ) : (
           events.map((event) => (

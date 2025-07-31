@@ -70,13 +70,13 @@ export function generateRandomCharacter(): Character {
       looks: Math.floor(Math.random() * 50) + 50, // 50-100
       happiness: Math.floor(Math.random() * 50) + 50, // 50-100
       reputation: Math.floor(Math.random() * 30) + 70, // 70-100 (start with good reputation)
+      money: Math.floor(Math.random() * 1000) + 500, // $500-1500 starting money
     },
     family: {
       mother,
       father,
       siblings,
     },
-    money: 0,
     isAlive: true,
     createdAt: new Date(),
     education: {
@@ -93,7 +93,14 @@ export function generateRandomCharacter(): Character {
     isGrounded: false,
     groundedUntilAge: 0,
     hasJob: false,
-    isPregnant: false
+    isPregnant: false,
+    finances: {
+      savings: 0,
+      debt: 0,
+      investments: 0,
+      monthlyExpenses: 200,
+      assets: []
+    }
   };
 }
 
@@ -107,6 +114,5 @@ export function getStatColor(value: number): string {
 export function getStatBarColor(value: number): string {
   if (value >= 80) return 'bg-green-500';
   if (value >= 60) return 'bg-yellow-500';
-  if (value >= 40) return 'bg-orange-500';
   return 'bg-red-500';
 }
