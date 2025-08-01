@@ -138,7 +138,7 @@ const CareerTab: React.FC = () => {
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Salary</span>
                 <span className="text-lg font-bold text-green-600 dark:text-green-400">
-                  ${(character.salary || 0).toLocaleString()}/year
+                  ${Math.round(character.salary || 0).toLocaleString()}/year
                 </span>
               </div>
               <div className="flex items-center justify-between">
@@ -153,13 +153,13 @@ const CareerTab: React.FC = () => {
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Performance</span>
                 <span className={`font-bold ${getPerformanceColor(character.jobPerformance || 50)}`}>
-                  {character.jobPerformance || 50}%
+                  {Math.round(character.jobPerformance || 50)}%
                 </span>
               </div>
               <div className="stat-bar">
                 <div 
                   className={`h-full rounded-full transition-all duration-500 ${getPerformanceBarColor(character.jobPerformance || 50)}`}
-                  style={{ width: `${character.jobPerformance || 50}%` }}
+                  style={{ width: `${Math.round(character.jobPerformance || 50)}%` }}
                 />
               </div>
             </div>
@@ -221,7 +221,7 @@ const CareerTab: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                {character.college?.gpa?.toFixed(2)}
+                {character.college?.gpa ? Math.round(character.college.gpa) : 'N/A'}
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400">GPA</div>
             </div>
@@ -275,7 +275,7 @@ const CareerTab: React.FC = () => {
                     
                     <div className="flex items-center justify-between">
                       <div className="text-sm text-gray-600 dark:text-gray-400">
-                        Salary: ${job.salary.min.toLocaleString()} - ${job.salary.max.toLocaleString()}
+                        Salary: ${Math.round(job.salary.min).toLocaleString()} - ${Math.round(job.salary.max).toLocaleString()}
                       </div>
                       <button
                         onClick={() => handleApplyForJob(job.id)}

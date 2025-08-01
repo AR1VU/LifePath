@@ -108,7 +108,7 @@ const AssetsTab: React.FC = () => {
           </div>
           <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 text-center">
             <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-              ${character.stats.money.toLocaleString()}
+              ${Math.round(character.stats.money).toLocaleString()}
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">Cash</div>
           </div>
@@ -198,7 +198,7 @@ const AssetsTab: React.FC = () => {
             {character.ownedAssets.map((asset) => {
               const Icon = getAssetIcon(asset.type);
               const valueChange = asset.currentValue - asset.purchasePrice;
-              const valueChangePercent = ((valueChange / asset.purchasePrice) * 100).toFixed(1);
+              const valueChangePercent = Math.round((valueChange / asset.purchasePrice) * 100);
               
               return (
                 <div key={asset.id} className="border border-gray-200 dark:border-gray-700 rounded-xl p-4">
@@ -222,7 +222,7 @@ const AssetsTab: React.FC = () => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div className="text-center">
                       <div className="text-lg font-bold text-gray-800 dark:text-white">
-                        ${asset.currentValue.toLocaleString()}
+                        ${Math.round(asset.currentValue).toLocaleString()}
                       </div>
                       <div className="text-sm text-gray-600 dark:text-gray-400">Current Value</div>
                     </div>
@@ -231,7 +231,7 @@ const AssetsTab: React.FC = () => {
                         valueChange >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
                       }`}>
                         {valueChange >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
-                        <span>{valueChange >= 0 ? '+' : ''}${valueChange.toLocaleString()}</span>
+                        <span>{valueChange >= 0 ? '+' : ''}${Math.round(valueChange).toLocaleString()}</span>
                       </div>
                       <div className="text-sm text-gray-600 dark:text-gray-400">
                         {valueChangePercent}% change
@@ -241,7 +241,7 @@ const AssetsTab: React.FC = () => {
                       {asset.monthlyMaintenance && (
                         <>
                           <div className="text-lg font-bold text-orange-600 dark:text-orange-400">
-                            ${asset.monthlyMaintenance}/mo
+                            ${Math.round(asset.monthlyMaintenance)}/mo
                           </div>
                           <div className="text-sm text-gray-600 dark:text-gray-400">Maintenance</div>
                         </>

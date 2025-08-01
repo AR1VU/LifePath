@@ -182,7 +182,7 @@ const ChildrenTab: React.FC = () => {
                     <div className="stat-bar">
                       <div 
                         className={`h-full rounded-full transition-all duration-500 ${getRelationshipBarColor(child.relationship)}`}
-                        style={{ width: `${child.relationship}%` }}
+                        style={{ width: `${Math.round(child.relationship)}%` }}
                       />
                     </div>
                   </div>

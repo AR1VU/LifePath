@@ -64,7 +64,7 @@ const HealthTab: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                ${character.lifeSummary.totalWealth.toLocaleString()}
+                ${Math.round(character.lifeSummary.totalWealth).toLocaleString()}
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400">Total Wealth</div>
             </div>
@@ -82,7 +82,7 @@ const HealthTab: React.FC = () => {
             </div>
             <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
-                {character.lifeSummary.legacyScore}
+                {Math.round(character.lifeSummary.legacyScore)}
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400">Legacy Score</div>
             </div>
@@ -202,13 +202,13 @@ const HealthTab: React.FC = () => {
                   <span className="font-semibold text-gray-700 dark:text-gray-300">Physical Health</span>
                 </div>
                 <span className={`font-bold ${getHealthColor(character.stats.physicalHealth)}`}>
-                  {character.stats.physicalHealth}
+                  {Math.round(character.stats.physicalHealth)}
                 </span>
               </div>
               <div className="stat-bar">
                 <div 
                   className={`h-full rounded-full transition-all duration-500 ${getHealthBarColor(character.stats.physicalHealth)}`}
-                  style={{ width: `${character.stats.physicalHealth}%` }}
+                  style={{ width: `${Math.round(character.stats.physicalHealth)}%` }}
                 />
               </div>
             </div>
@@ -220,13 +220,13 @@ const HealthTab: React.FC = () => {
                   <span className="font-semibold text-gray-700 dark:text-gray-300">Mental Health</span>
                 </div>
                 <span className={`font-bold ${getHealthColor(character.stats.mentalHealth)}`}>
-                  {character.stats.mentalHealth}
+                  {Math.round(character.stats.mentalHealth)}
                 </span>
               </div>
               <div className="stat-bar">
                 <div 
                   className={`h-full rounded-full transition-all duration-500 ${getHealthBarColor(character.stats.mentalHealth)}`}
-                  style={{ width: `${character.stats.mentalHealth}%` }}
+                  style={{ width: `${Math.round(character.stats.mentalHealth)}%` }}
                 />
               </div>
             </div>
@@ -240,13 +240,13 @@ const HealthTab: React.FC = () => {
                   <span className="font-semibold text-gray-700 dark:text-gray-300">Addictions</span>
                 </div>
                 <span className={`font-bold ${character.stats.addictions > 50 ? 'text-red-500' : 'text-green-500'}`}>
-                  {character.stats.addictions}
+                  {Math.round(character.stats.addictions)}
                 </span>
               </div>
               <div className="stat-bar">
                 <div 
                   className={`h-full rounded-full transition-all duration-500 ${character.stats.addictions > 50 ? 'bg-red-500' : 'bg-green-500'}`}
-                  style={{ width: `${character.stats.addictions}%` }}
+                  style={{ width: `${Math.round(character.stats.addictions)}%` }}
                 />
               </div>
             </div>
@@ -423,7 +423,7 @@ const HealthTab: React.FC = () => {
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-                {character.insurance.coverage}%
+                {Math.round(character.insurance.coverage)}%
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400">Coverage</div>
             </div>
@@ -437,7 +437,7 @@ const HealthTab: React.FC = () => {
           {character.insurance.monthlyPremium > 0 && (
             <div className="mt-4 text-center">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Monthly Premium: ${character.insurance.monthlyPremium}/month
+                Monthly Premium: ${Math.round(character.insurance.monthlyPremium)}/month
               </p>
             </div>
           )}

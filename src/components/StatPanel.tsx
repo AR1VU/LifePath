@@ -92,7 +92,7 @@ const StatPanel: React.FC = () => {
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className={`font-bold text-sm ${getStatColor(value)}`}>
-                    {value}
+                    {Math.round(value)}
                   </span>
                   {statChange && (
                     <span 
@@ -102,7 +102,7 @@ const StatPanel: React.FC = () => {
                           : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 animate-pulse'
                       }`}
                     >
-                      {statChange.change > 0 ? '+' : ''}{statChange.change}
+                      {statChange.change > 0 ? '+' : ''}{Math.round(statChange.change)}
                     </span>
                   )}
                 </div>
@@ -110,7 +110,7 @@ const StatPanel: React.FC = () => {
               <div className="stat-bar">
                 <div 
                   className={`h-full rounded-full transition-all duration-500 ${getStatBarColor(value)} relative overflow-hidden`}
-                  style={{ width: `${value}%` }}
+                  style={{ width: `${Math.round(value)}%` }}
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
                 </div>
@@ -178,11 +178,11 @@ const StatPanel: React.FC = () => {
               {character.insurance.type} Insurance
             </span>
             <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
-              {character.insurance.coverage}%
+              {Math.round(character.insurance.coverage)}%
             </span>
           </div>
           <div className="text-xs text-gray-500 dark:text-gray-400">
-            Premium: ${character.insurance.monthlyPremium}/month • 
+            Premium: ${Math.round(character.insurance.monthlyPremium)}/month • 
             Deductible: ${character.insurance.deductible.toLocaleString()}
           </div>
         </div>
@@ -236,7 +236,7 @@ const StatPanel: React.FC = () => {
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Cash</span>
               <span className="text-sm font-bold text-green-600 dark:text-green-400">
-                ${character.stats.money.toLocaleString()}
+                ${Math.round(character.stats.money).toLocaleString()}
               </span>
             </div>
           </div>
@@ -245,7 +245,7 @@ const StatPanel: React.FC = () => {
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Debt</span>
                 <span className="text-sm font-bold text-red-600 dark:text-red-400">
-                  ${character.finances.debt.toLocaleString()}
+                  ${Math.round(character.finances.debt).toLocaleString()}
                 </span>
               </div>
             </div>
@@ -255,7 +255,7 @@ const StatPanel: React.FC = () => {
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Annual Salary</span>
                 <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
-                  ${(character.salary || 0).toLocaleString()}
+                  ${Math.round(character.salary || 0).toLocaleString()}
                 </span>
               </div>
             </div>
@@ -265,7 +265,7 @@ const StatPanel: React.FC = () => {
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Savings</span>
                 <span className="text-sm font-bold text-purple-600 dark:text-purple-400">
-                  ${character.finances.savings.toLocaleString()}
+                  ${Math.round(character.finances.savings).toLocaleString()}
                 </span>
               </div>
             </div>
@@ -288,7 +288,7 @@ const StatPanel: React.FC = () => {
             </div>
             <div className="flex items-center space-x-2">
               <span className="w-2 h-2 bg-yellow-400 rounded-full"></span>
-              <span className="text-xs">Performance: {character.jobPerformance || 50}%</span>
+              <span className="text-xs">Performance: {Math.round(character.jobPerformance || 50)}%</span>
             </div>
             <div className="flex items-center space-x-2">
               <span className="w-2 h-2 bg-purple-400 rounded-full"></span>

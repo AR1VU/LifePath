@@ -85,7 +85,7 @@ const EducationTab: React.FC = () => {
                 Current Grades
               </h3>
               <p className="text-gray-600 dark:text-gray-400">
-                GPA: {character.education.gpa.toFixed(2)}
+                GPA: {Math.round(character.education.gpa)}
               </p>
             </div>
           </div>
@@ -102,14 +102,14 @@ const EducationTab: React.FC = () => {
                       {getGradeLetter(grade)}
                     </span>
                     <span className="text-sm text-gray-500 dark:text-gray-400">
-                      ({grade}%)
+                      ({Math.round(grade)}%)
                     </span>
                   </div>
                 </div>
                 <div className="stat-bar">
                   <div 
                     className={`h-full rounded-full transition-all duration-500 ${getGradeBarColor(grade)}`}
-                    style={{ width: `${grade}%` }}
+                    style={{ width: `${Math.round(grade)}%` }}
                   />
                 </div>
               </div>
