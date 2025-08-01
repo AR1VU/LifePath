@@ -36,6 +36,8 @@ const RelationshipsTab: React.FC = () => {
     ]);
 
     const handleFlirt = (option: typeof flirtOptions[0]) => {
+      if (!character.isAlive || character.isInPrison) return;
+      
       const success = Math.random() < option.success;
       flirtWithPartner(partner.id, option.text, success, {
         trust: option.trust,
@@ -101,6 +103,34 @@ const RelationshipsTab: React.FC = () => {
     );
   }
 
+  if (!character.isAlive || character.isInPrison) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">Love Life</h2>
+          <p className="text-gray-600 dark:text-gray-400">
+            Your romantic journey has ended
+          </p>
+        </div>
+
+        <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-12 text-center">
+          <div className="w-24 h-24 mx-auto bg-gradient-to-br from-red-500 to-rose-600 rounded-full flex items-center justify-center mb-6">
+            <span className="text-3xl">{character.isInPrison ? '🔒' : '💀'}</span>
+          </div>
+          <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+            {character.isInPrison ? 'Love Life on Hold' : 'Love Life Ended'}
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400 text-lg">
+            {character.isInPrison 
+              ? 'Your romantic relationships are on hold while you serve your prison sentence.'
+              : 'Your romantic journey has come to an end.'
+            }
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -111,7 +141,8 @@ const RelationshipsTab: React.FC = () => {
       </div>
 
       {/* Dating Actions */}
-      <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-6">
+      {character.isAlive && !character.isInPrison && (
+        <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-6">
         <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Dating Actions</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <button
@@ -136,7 +167,8 @@ const RelationshipsTab: React.FC = () => {
             </button>
           )}
         </div>
-      </div>
+        </div>
+      )}
 
       {/* Active Relationships */}
       {activeRelationships.length > 0 && (

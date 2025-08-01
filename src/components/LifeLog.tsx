@@ -30,12 +30,12 @@ const LifeLog: React.FC = () => {
   };
 
   return (
-    <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-8 h-[600px] flex flex-col">
+    <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-6 h-full flex flex-col">
       <div className="flex items-center space-x-3 mb-6">
         <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl">
           <span className="text-white text-lg">📖</span>
         </div>
-        <h3 className="text-2xl font-bold text-gray-800 dark:text-white">Life Story</h3>
+        <h3 className="text-xl font-bold text-gray-800 dark:text-white">Life Story</h3>
       </div>
       
       <div className="flex-1 overflow-y-auto space-y-4 custom-scrollbar pr-2">
@@ -44,7 +44,7 @@ const LifeLog: React.FC = () => {
             <div className="w-24 h-24 mx-auto bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 rounded-full flex items-center justify-center mb-4">
               <span className="text-3xl">🌟</span>
             </div>
-            <p className="text-gray-500 dark:text-gray-400 text-lg font-medium">
+            <p className="text-gray-500 dark:text-gray-400 text-base font-medium">
               Your story begins here
             </p>
             <p className="text-gray-400 dark:text-gray-500 text-sm mt-2">
@@ -52,7 +52,7 @@ const LifeLog: React.FC = () => {
             </p>
             <button
               onClick={startNewLife}
-              className="mt-6 flex items-center justify-center space-x-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg mx-auto"
+              className="mt-4 flex items-center justify-center space-x-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg mx-auto"
             >
               <Play className="w-5 h-5" />
               <span>Start New Life</span>
@@ -62,23 +62,23 @@ const LifeLog: React.FC = () => {
           events.map((event) => (
             <div
               key={event.id}
-              className={`p-6 rounded-2xl transition-all duration-300 hover:shadow-lg hover:scale-[1.02] fade-in-up ${getEventTypeColor(event.type)}`}
+              className={`p-4 rounded-2xl transition-all duration-300 hover:shadow-lg hover:scale-[1.01] fade-in-up ${getEventTypeColor(event.type)}`}
             >
-              <div className="flex items-start justify-between mb-3">
+              <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center space-x-3">
-                  <span className="text-xl">{getEventIcon(event.type)}</span>
-                  <h4 className="font-bold text-gray-800 dark:text-white text-lg">{event.title}</h4>
+                  <span className="text-lg">{getEventIcon(event.type)}</span>
+                  <h4 className="font-bold text-gray-800 dark:text-white text-base">{event.title}</h4>
                 </div>
                 <div className="flex flex-col items-end">
                   <span className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">
                     Age
                   </span>
-                  <span className="text-lg font-bold text-gray-700 dark:text-gray-300">
+                  <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
                     {event.age}
                   </span>
                 </div>
               </div>
-              <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+              <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-3 text-sm">
                 {event.description}
               </p>
               {Object.keys(event.statChanges).length > 0 && (

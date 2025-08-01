@@ -18,6 +18,7 @@ const ActionMenu: React.FC = () => {
   const isTeenager = character && character.age >= 13 && character.age <= 17;
   const canWork = character && character.age >= 15 && !character.hasJob;
   const hasActiveRelationship = character?.relationships.some(r => r.isActive);
+  const canTakeActions = character?.isAlive && !character?.isInPrison;
 
   return (
     <div className="space-y-6">
@@ -54,7 +55,7 @@ const ActionMenu: React.FC = () => {
             </div>
 
             {/* Teenager Actions */}
-            {isTeenager && character?.isAlive && (
+            {isTeenager && canTakeActions && (
               <div className="space-y-3">
                 <h4 className="font-bold text-gray-800 dark:text-white text-sm uppercase tracking-wide">
                   Teen Actions
@@ -107,6 +108,21 @@ const ActionMenu: React.FC = () => {
                 </div>
               </div>
             )}
+            
+            {character?.isInPrison && (
+              <div className="bg-gradient-to-r from-gray-50 to-red-50 dark:from-gray-900/20 dark:to-red-900/20 border border-red-200/50 dark:border-red-800/50 rounded-xl p-5">
+                <div className="flex items-center justify-center space-x-3 text-red-600 dark:text-red-400">
+                  <div className="p-2 bg-red-100 dark:bg-red-800/50 rounded-lg">
+                    <Skull className="w-5 h-5" />
+                  </div>
+                  <span className="font-bold text-lg">Imprisoned</span>
+                </div>
+                <p className="text-center text-sm text-red-500 dark:text-red-400 mt-2">
+                  You are currently serving time in prison
+                </p>
+              </div>
+            )}
+            
             {!character?.isAlive && (
               <div className="bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20 border border-red-200/50 dark:border-red-800/50 rounded-xl p-5">
                 <div className="flex items-center justify-center space-x-3 text-red-600 dark:text-red-400">

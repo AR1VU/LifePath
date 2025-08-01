@@ -19,10 +19,6 @@ export function loadGameState(): GameState | null {
     // Convert date strings back to Date objects
     if (parsed.character) {
       parsed.character.createdAt = new Date(parsed.character.createdAt);
-      // Ensure criminalRecord is always an array
-      if (!Array.isArray(parsed.character.criminalRecord)) {
-        parsed.character.criminalRecord = [];
-      }
     }
     parsed.events = parsed.events.map((event: any) => ({
       ...event,

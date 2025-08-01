@@ -65,6 +65,84 @@ export interface Character {
     monthlyExpenses: number;
     assets: Asset[];
   };
+  ownedAssets: OwnedAsset[];
+  criminalStatus: CriminalStatus;
+  prisonRecord: PrisonRecord[];
+  isInPrison: boolean;
+  prisonReleaseAge?: number;
+  bailAmount?: number;
+  courtDate?: number;
+}
+
+export interface OwnedAsset {
+  id: string;
+  type: 'real_estate' | 'vehicle' | 'misc';
+  name: string;
+  purchasePrice: number;
+  currentValue: number;
+  purchasedAt: number;
+  monthlyMaintenance?: number;
+  description: string;
+  category: string;
+}
+
+export interface CriminalStatus {
+  wantedLevel: number; // 0-5
+  activeWarrants: string[];
+  totalCrimesCommitted: number;
+  timesSentenced: number;
+  totalJailTime: number;
+  isOnTrial: boolean;
+  hasLawyer: boolean;
+  lawyerQuality: 'public_defender' | 'private' | 'elite';
+}
+
+export interface PrisonRecord {
+  id: string;
+  crime: string;
+  sentence: number; // in years
+  servedTime: number;
+  prisonName: string;
+  enteredAt: number;
+  releasedAt?: number;
+  escapeAttempts: number;
+  prisonEvents: PrisonEvent[];
+}
+
+export interface PrisonEvent {
+  id: string;
+  type: 'fight' | 'bribery' | 'escape_attempt' | 'good_behavior' | 'gang_activity';
+  description: string;
+  outcome: 'success' | 'failure' | 'neutral';
+  ageOccurred: number;
+}
+
+export interface CrimeAction {
+  id: string;
+  name: string;
+  description: string;
+  difficulty: 'easy' | 'medium' | 'hard' | 'extreme';
+  baseSuccessRate: number;
+  minReward: number;
+  maxReward: number;
+  jailTimeRange: [number, number]; // in years
+  requiredStats?: Partial<Character['stats']>;
+  wantedLevelIncrease: number;
+}
+
+export interface AssetTemplate {
+  id: string;
+  name: string;
+  type: 'real_estate' | 'vehicle' | 'misc';
+  category: string;
+  basePrice: number;
+  monthlyMaintenance?: number;
+  description: string;
+  requirements?: {
+    minAge?: number;
+    minMoney?: number;
+    license?: boolean;
+  };
 }
 
 export interface Disease {
@@ -196,7 +274,7 @@ export interface GameEvent {
   statChanges: Partial<Character['stats']>;
   timestamp: Date;
   type: 'positive' | 'negative' | 'neutral';
-  category: 'general' | 'family' | 'education' | 'achievement';
+  category: 'general' | 'family' | 'education' | 'achievement' | 'criminal' | 'prison' | 'assets';
   familyMemberInvolved?: string;
 }
 
@@ -204,7 +282,7 @@ export interface GameState {
   character: Character | null;
   events: GameEvent[];
   isPlaying: boolean;
-  currentTab: 'stats' | 'family' | 'education' | 'career' | 'relationships' | 'achievements';
+  currentTab: 'stats' | 'family' | 'education' | 'career' | 'relationships' | 'achievements' | 'health' | 'assets' | 'criminal';
   settings: {
     darkMode: boolean;
     autoSave: boolean;

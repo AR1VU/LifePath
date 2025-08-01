@@ -11,6 +11,8 @@ import AchievementsTab from './components/AchievementsTab';
 import RelationshipsTab from './components/RelationshipsTab';
 import CareerTab from './components/CareerTab';
 import HealthTab from './components/HealthTab';
+import AssetsTab from './components/AssetsTab';
+import CriminalTab from './components/CriminalTab';
 
 function App() {
   const { settings, currentTab, setCurrentTab, loadGame } = useGameStore();
@@ -48,6 +50,8 @@ function App() {
     { id: 'education' as const, label: 'Education', icon: GraduationCap },
     { id: 'career' as const, label: 'Career', icon: () => <span className="text-sm">💼</span> },
     { id: 'relationships' as const, label: 'Love', icon: () => <span className="text-sm">💕</span> },
+    { id: 'assets' as const, label: 'Assets', icon: () => <span className="text-sm">🏠</span> },
+    { id: 'criminal' as const, label: 'Crime', icon: () => <span className="text-sm">🚔</span> },
     { id: 'achievements' as const, label: 'Achievements', icon: Trophy },
   ];
 
@@ -65,6 +69,10 @@ function App() {
         return <CareerTab />;
       case 'relationships':
         return <RelationshipsTab />;
+      case 'assets':
+        return <AssetsTab />;
+      case 'criminal':
+        return <CriminalTab />;
       case 'achievements':
         return <AchievementsTab />;
       default:
@@ -73,19 +81,19 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen transition-colors duration-500 pb-24">
+    <div className="h-screen overflow-hidden transition-colors duration-500">
       <div className="container mx-auto px-4 py-6">
         {/* Header */}
-        <div className="text-center mb-12 fade-in-up">
+        <div className="text-center mb-8 fade-in-up">
           <div className="flex items-center justify-center space-x-3 mb-2">
             <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg">
               <Home className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
               LifePath
             </h1>
           </div>
-          <p className="text-lg text-gray-600 dark:text-gray-400 font-medium">
+          <p className="text-base text-gray-600 dark:text-gray-400 font-medium">
             Live your digital life, one year at a time
           </p>
           
@@ -109,16 +117,16 @@ function App() {
         </div>
 
         {/* Tab Navigation */}
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-2">
-            <div className="flex space-x-2">
+            <div className="flex space-x-1 overflow-x-auto">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
                 return (
                   <button
                     key={tab.id}
                     onClick={() => setCurrentTab(tab.id)}
-                    className={`flex-1 flex items-center justify-center space-x-2 py-3 px-4 rounded-xl font-semibold transition-all duration-300 ${
+                    className={`flex-1 flex items-center justify-center space-x-2 py-2 px-3 rounded-xl font-semibold transition-all duration-300 text-sm whitespace-nowrap ${
                       currentTab === tab.id
                         ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg'
                         : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50'
@@ -134,24 +142,15 @@ function App() {
         </div>
 
         {/* Game Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 min-h-[calc(100vh-240px)]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[calc(100vh-200px)]">
           {/* Stats Panel */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 h-full overflow-hidden">
             {renderTabContent()}
           </div>
 
           {/* Life Log */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 h-full overflow-hidden">
             <LifeLog />
-          </div>
-        </div>
-
-        {/* Mobile-optimized bottom controls */}
-        <div className="lg:hidden mt-8">
-          <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-6">
-            <div className="text-center text-sm text-gray-600 dark:text-gray-400 font-medium">
-              Swipe and scroll to navigate • Optimized for mobile
-            </div>
           </div>
         </div>
       </div>

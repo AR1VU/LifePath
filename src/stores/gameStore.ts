@@ -5,6 +5,8 @@ import { generateRandomEvent, applyStatChanges } from '../utils/events';
 import { generateFamilyEvent, interactWithFamily, ageFamilyMembers } from '../utils/family';
 import { generateSchoolEvent, updateEducationProgress } from '../utils/education';
 import { generateRandomDisease, checkForDeath, generateLifeSummary, generateFuneralEvents } from '../utils/health';
+import { updateAssetValues, getMonthlyAssetExpenses } from '../utils/assets';
+import { generatePrisonEvent, checkPrisonRelease } from '../utils/criminal';
 import { 
   startDating as startDatingUtil, 
   breakUp as breakUpUtil, 
@@ -28,7 +30,7 @@ interface GameStore extends GameState {
   // Actions
   startNewLife: () => void;
   ageUp: () => void;
-  setCurrentTab: (tab: GameState['currentTab'] | 'health') => void;
+  setCurrentTab: (tab: GameState['currentTab']) => void;
   interactWithFamilyMember: (familyMemberId: string, action: 'talk' | 'compliment' | 'insult' | 'ask_money') => void;
   
   // Teenager actions
@@ -102,9 +104,22 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const { character, events, settings } = get();
     if (!character || !character.isAlive) return;
 
+    // Check if character is dead - prevent any actions
+    if (!character.isAlive) return;
+
     const newAge = character.age + 1;
     let updatedCharacter = { ...character, age: newAge };
     let newEvents = [...events];
+
+    // Check for prison release first
+    const prisonReleaseResult = checkPrisonRelease(updatedCharacter);
+    updatedCharacter = prisonReleaseResult.character;
+    if (prisonReleaseResult.event) {
+      newEvents.push(prisonReleaseResult.event);
+    }
+
+    // Update asset values
+    updatedCharacter = updateAssetValues(updatedCharacter);
 
     // Age family members
     updatedCharacter = ageFamilyMembers(updatedCharacter);
@@ -146,6 +161,21 @@ export const useGameStore = create<GameStore>((set, get) => ({
           get().addStatChange(stat as keyof Character['stats'], change);
         }
       });
+    }
+
+    // Generate prison events if in prison
+    if (updatedCharacter.isInPrison) {
+      const prisonEvent = generatePrisonEvent(updatedCharacter);
+      if (prisonEvent) {
+        updatedCharacter = applyStatChanges(updatedCharacter, prisonEvent.statChanges);
+        newEvents.push(prisonEvent);
+
+        Object.entries(prisonEvent.statChanges).forEach(([stat, change]) => {
+          if (typeof change === 'number' && change !== 0) {
+            get().addStatChange(stat as keyof Character['stats'], change);
+          }
+        });
+      }
     }
 
     // Check for death
@@ -310,7 +340,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
     // Add job income
     if (updatedCharacter.hasJob) {
       const monthlyIncome = Math.floor((updatedCharacter.salary || 30000) / 12);
-      const expenses = updatedCharacter.finances?.monthlyExpenses || 200;
+      const baseExpenses = updatedCharacter.finances?.monthlyExpenses || 200;
+      const assetExpenses = getMonthlyAssetExpenses(updatedCharacter);
+      const expenses = baseExpenses + assetExpenses;
       const netIncome = monthlyIncome - expenses;
       updatedCharacter.stats.money = Math.max(0, updatedCharacter.stats.money + netIncome);
     }
@@ -324,6 +356,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
     // Insurance premiums
     if (updatedCharacter.insurance.monthlyPremium > 0) {
       updatedCharacter.stats.money = Math.max(0, updatedCharacter.stats.money - updatedCharacter.insurance.monthlyPremium);
+    }
+
+    // Asset maintenance costs (if not employed)
+    if (!updatedCharacter.hasJob) {
+      const assetExpenses = getMonthlyAssetExpenses(updatedCharacter);
+      updatedCharacter.stats.money = Math.max(0, updatedCharacter.stats.money - assetExpenses);
     }
 
     set({
@@ -526,7 +564,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   joinGang: () => {
     const { character, events } = get();
-    if (!character || character.age < 13) return;
+    if (!character || character.age < 13 || !character.isAlive || character.isInPrison) return;
 
     try {
       const { character: updatedCharacter, event } = commitCrime(character);
@@ -552,7 +590,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   tryDrugs: () => {
     const { character, events } = get();
-    if (!character || character.age < 13) return;
+    if (!character || character.age < 13 || !character.isAlive || character.isInPrison) return;
 
     try {
       const { character: updatedCharacter, event } = tryDrugs(character);
@@ -578,7 +616,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   sneakOut: () => {
     const { character, events } = get();
-    if (!character || character.age < 13) return;
+    if (!character || character.age < 13 || !character.isAlive || character.isInPrison) return;
 
     try {
       const { character: updatedCharacter, event } = sneakOut(character);

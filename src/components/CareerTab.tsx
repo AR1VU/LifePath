@@ -28,6 +28,8 @@ const CareerTab: React.FC = () => {
   };
 
   const handleWorkAction = (action: 'work_harder' | 'slack_off' | 'ask_promotion' | 'quit') => {
+    if (!character.isAlive || character.isInPrison) return;
+    
     try {
       const result = workAction(character, action);
       setCharacter(result.character);
@@ -38,6 +40,8 @@ const CareerTab: React.FC = () => {
   };
 
   const handleEnrollCollege = (major: string) => {
+    if (!character.isAlive || character.isInPrison) return;
+    
     try {
       const result = enrollInCollege(character, major);
       setCharacter(result.character);
@@ -113,7 +117,7 @@ const CareerTab: React.FC = () => {
       )}
 
       {/* Current Job Status */}
-      {character.hasJob && (
+      {character.hasJob && character.isAlive && !character.isInPrison && (
         <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-6">
           <div className="flex items-center space-x-4 mb-6">
             <div className="p-3 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl">
@@ -198,7 +202,7 @@ const CareerTab: React.FC = () => {
       )}
 
       {/* College Status */}
-      {isInCollege && (
+      {isInCollege && character.isAlive && (
         <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-6">
           <div className="flex items-center space-x-4 mb-4">
             <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl">
@@ -238,7 +242,7 @@ const CareerTab: React.FC = () => {
       )}
 
       {/* Job Search */}
-      {!character.hasJob && isAdult && (
+      {!character.hasJob && isAdult && character.isAlive && !character.isInPrison && (
         <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-xl font-bold text-gray-800 dark:text-white">Job Search</h3>
@@ -329,7 +333,7 @@ const CareerTab: React.FC = () => {
       )}
 
       {/* Too Young Message */}
-      {!isAdult && (
+      {!isAdult && character.isAlive && (
         <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-8 text-center">
           <div className="w-24 h-24 mx-auto bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 rounded-full flex items-center justify-center mb-4">
             <span className="text-3xl">👶</span>
@@ -339,6 +343,24 @@ const CareerTab: React.FC = () => {
           </h3>
           <p className="text-gray-600 dark:text-gray-400">
             Focus on your education and family for now. Career opportunities will open up when you turn 18!
+          </p>
+        </div>
+      )}
+
+      {/* Prison/Death Messages */}
+      {(character.isInPrison || !character.isAlive) && (
+        <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-8 text-center">
+          <div className="w-24 h-24 mx-auto bg-gradient-to-br from-red-500 to-rose-600 rounded-full flex items-center justify-center mb-4">
+            <span className="text-3xl">{character.isInPrison ? '🔒' : '💀'}</span>
+          </div>
+          <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
+            {character.isInPrison ? 'Career on Hold' : 'Career Ended'}
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400">
+            {character.isInPrison 
+              ? 'Your career is on hold while you serve your prison sentence.'
+              : 'Your career has come to an end with your passing.'
+            }
           </p>
         </div>
       )}
