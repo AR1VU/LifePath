@@ -25,80 +25,88 @@ const CharacterCreation: React.FC<CharacterCreationProps> = ({ onCreateCharacter
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-blue-900 p-4">
-      <div className="glass-card rounded-3xl premium-shadow dark:premium-shadow-dark p-8 w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="pixel-modal p-8 w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="w-20 h-20 mx-auto bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mb-4">
-            <User className="w-10 h-10 text-white" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">
-            Create Your Life
+          <div className="pixel-heart mx-auto mb-4"></div>
+          <h1 className="text-pixel-xl font-bold text-purple-600 dark:text-purple-400 mb-2">
+            CREATE LIFE
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Choose your identity and begin your journey
+          <div className="flex items-center justify-center mb-2">
+            <div className="w-4 h-1 bg-red-500 mr-1"></div>
+            <div className="w-4 h-1 bg-red-500 mr-1"></div>
+            <div className="w-4 h-1 bg-red-500 mr-1"></div>
+            <div className="w-4 h-1 bg-red-500 mr-1"></div>
+            <div className="w-4 h-1 bg-red-500 mr-1"></div>
+            <div className="w-4 h-1 bg-red-500 mr-1"></div>
+            <div className="w-4 h-1 bg-red-500 mr-1"></div>
+            <div className="w-4 h-1 bg-red-500"></div>
+          </div>
+          <p className="text-pixel-xs text-red-500 dark:text-red-400 font-bold uppercase">
+            CHOOSE YOUR DESTINY
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Name Input */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-              Your Name
+            <label className="block text-pixel-xs font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase">
+              NAME
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Enter your name"
-              className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
+              placeholder="ENTER NAME"
+              className="w-full pixel-input"
               required
             />
           </div>
 
           {/* Gender Selection */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-              Gender
+            <label className="block text-pixel-xs font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase">
+              GENDER
             </label>
             <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
                 onClick={() => setGender('male')}
-                className={`p-4 rounded-xl border-2 transition-all duration-200 ${
+                className={`p-4 border-4 border-black transition-all duration-200 ${
                   gender === 'male'
-                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
-                    : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 text-gray-700 dark:text-gray-300'
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-400'
                 }`}
               >
                 <div className="text-2xl mb-2">👨</div>
-                <div className="font-semibold">Male</div>
+                <div className="font-semibold text-pixel-xs">MALE</div>
               </button>
               <button
                 type="button"
                 onClick={() => setGender('female')}
-                className={`p-4 rounded-xl border-2 transition-all duration-200 ${
+                className={`p-4 border-4 border-black transition-all duration-200 ${
                   gender === 'female'
-                    ? 'border-pink-500 bg-pink-50 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300'
-                    : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 text-gray-700 dark:text-gray-300'
+                    ? 'bg-pink-500 text-white'
+                    : 'bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-400'
                 }`}
               >
                 <div className="text-2xl mb-2">👩</div>
-                <div className="font-semibold">Female</div>
+                <div className="font-semibold text-pixel-xs">FEMALE</div>
               </button>
             </div>
           </div>
 
           {/* Country Selection */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-              Country
+            <label className="block text-pixel-xs font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase">
+              COUNTRY
             </label>
             <div className="relative">
-              <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
               <select
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 dark:text-white transition-all duration-200 appearance-none"
+                className="w-full pl-10 pr-4 py-3 pixel-input appearance-none"
               >
                 {COUNTRIES.map((countryOption) => (
                   <option key={countryOption} value={countryOption}>
@@ -113,16 +121,15 @@ const CharacterCreation: React.FC<CharacterCreationProps> = ({ onCreateCharacter
           <button
             type="submit"
             disabled={!name.trim()}
-            className="w-full flex items-center justify-center space-x-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 disabled:hover:scale-100 shadow-lg"
+            className="w-full pixel-button blue disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Heart className="w-5 h-5" />
-            <span>Begin Life</span>
+            <span>BEGIN LIFE</span>
           </button>
         </form>
 
         <div className="mt-8 text-center">
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            Your choices will shape your destiny
+          <p className="text-pixel-xs text-gray-500 dark:text-gray-400 uppercase">
+            CHOICES SHAPE DESTINY
           </p>
         </div>
       </div>

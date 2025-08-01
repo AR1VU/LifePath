@@ -97,34 +97,53 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen transition-colors duration-500">
-      <div className="container mx-auto px-4 py-4 sm:py-6">
+    <div className="min-h-screen">
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 text-pixel">
         {/* Header */}
-        <div className="text-center mb-4 sm:mb-8 fade-in-up">
+        <div className="text-center mb-4 sm:mb-8">
           <div className="flex items-center justify-center space-x-3 mb-2">
-            <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg">
-              <Home className="w-8 h-8 text-white" />
-            </div>
-            <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
-              LifePath
+            <div className="pixel-heart"></div>
+            <h1 className="text-pixel-2xl sm:text-pixel-3xl font-bold text-purple-600 dark:text-purple-400 pixel-pulse">
+              LIFE PATH
             </h1>
+            <div className="pixel-heart"></div>
           </div>
-          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 font-medium">
-            Live your digital life, one year at a time
+          <div className="flex items-center justify-center mb-2">
+            <div className="w-4 h-1 bg-red-500 mr-1"></div>
+            <div className="w-4 h-1 bg-red-500 mr-1"></div>
+            <div className="w-4 h-1 bg-red-500 mr-1"></div>
+            <div className="w-4 h-1 bg-red-500 mr-1"></div>
+            <div className="w-4 h-1 bg-red-500 mr-1"></div>
+            <div className="w-4 h-1 bg-red-500 mr-1"></div>
+            <div className="w-4 h-1 bg-red-500 mr-1"></div>
+            <div className="w-4 h-1 bg-red-500"></div>
+          </div>
+          <p className="text-pixel-sm text-red-500 dark:text-red-400 font-bold uppercase tracking-wider">
+            Virtual Life Simulator
           </p>
+          <div className="flex items-center justify-center mt-2">
+            <div className="w-4 h-1 bg-red-500 mr-1"></div>
+            <div className="w-4 h-1 bg-red-500 mr-1"></div>
+            <div className="w-4 h-1 bg-red-500 mr-1"></div>
+            <div className="w-4 h-1 bg-red-500 mr-1"></div>
+            <div className="w-4 h-1 bg-red-500 mr-1"></div>
+            <div className="w-4 h-1 bg-red-500 mr-1"></div>
+            <div className="w-4 h-1 bg-red-500 mr-1"></div>
+            <div className="w-4 h-1 bg-red-500"></div>
+          </div>
           
           {/* Menu Button */}
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 sm:p-3 bg-gradient-to-br from-gray-500 to-gray-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 z-50"
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 pixel-button blue"
           >
-            {showMenu ? <X className="w-5 h-5 sm:w-6 sm:h-6 text-white" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6 text-white" />}
+            {showMenu ? <X className="w-3 h-3 sm:w-4 sm:h-4" /> : <Menu className="w-3 h-3 sm:w-4 sm:h-4" />}
           </button>
           
           {/* Popup Menu */}
           {showMenu && (
-            <div className="absolute top-16 right-4 sm:top-20 sm:right-6 z-50 w-72 sm:w-80 max-h-[80vh] overflow-y-auto">
-              <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-6 space-y-6">
+            <div className="absolute top-16 right-4 sm:top-20 sm:right-6 z-50 w-72 sm:w-80 max-w-[calc(100vw-2rem)]">
+              <div className="pixel-modal dark:pixel-modal p-6 space-y-6">
                 <ActionMenu />
                 <Settings />
               </div>
@@ -134,7 +153,7 @@ function App() {
 
         {/* Tab Navigation */}
         <div className="mb-4 sm:mb-6">
-          <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-2">
+          <div className="pixel-card p-2">
             <div className="flex space-x-1 overflow-x-auto scrollbar-hide">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
@@ -142,14 +161,14 @@ function App() {
                   <button
                     key={tab.id}
                     onClick={() => setCurrentTab(tab.id)}
-                    className={`flex-shrink-0 flex items-center justify-center space-x-1 sm:space-x-2 py-2 px-2 sm:px-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-sm whitespace-nowrap min-w-0 ${
+                    className={`flex-shrink-0 flex items-center justify-center space-x-1 sm:space-x-2 py-2 px-2 sm:px-3 font-semibold text-pixel-xs sm:text-pixel-sm whitespace-nowrap min-w-0 ${
                       currentTab === tab.id
-                        ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg'
-                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50'
+                        ? 'pixel-tab active'
+                        : 'pixel-tab'
                     }`}
                   >
                     <Icon className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                    <span className="hidden xs:inline text-xs sm:text-sm">{tab.label}</span>
+                    <span className="hidden sm:inline">{tab.label}</span>
                   </button>
                 );
               })}
@@ -158,14 +177,14 @@ function App() {
         </div>
 
         {/* Game Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 min-h-[60vh] lg:h-[calc(100vh-280px)]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 min-h-[600px]">
           {/* Stats Panel */}
-          <div className="lg:col-span-1 h-full min-h-[400px] lg:min-h-0">
+          <div className="lg:col-span-1 order-2 lg:order-1">
             {renderTabContent()}
           </div>
 
           {/* Life Log */}
-          <div className="lg:col-span-1 h-full min-h-[400px] lg:min-h-0">
+          <div className="lg:col-span-1 order-1 lg:order-2">
             <LifeLog />
           </div>
         </div>
@@ -193,14 +212,14 @@ const FloatingAgeButton: React.FC = () => {
   return (
     <button
       onClick={handleAgeUp}
-      className="floating-button flex items-center space-x-3 group"
+      className="floating-pixel-button flex items-center space-x-2 sm:space-x-3 group"
     >
-      <div className="flex items-center justify-center w-10 h-10 bg-white/20 rounded-xl group-hover:bg-white/30 transition-colors duration-200">
+      <div className="flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8">
         <span className="text-xl">🎂</span>
       </div>
       <div className="flex flex-col items-start">
-        <span className="text-xs opacity-90 font-medium">Age Up</span>
-        <span className="text-sm font-bold">{character.age} → {character.age + 1}</span>
+        <span className="text-pixel-xs opacity-90 font-medium hidden sm:inline">AGE UP</span>
+        <span className="text-pixel-xs sm:text-pixel-sm font-bold">{character.age} → {character.age + 1}</span>
       </div>
     </button>
   );

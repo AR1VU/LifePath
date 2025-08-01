@@ -52,7 +52,7 @@ const ChildrenTab: React.FC = () => {
   const canHaveChildren = character.age >= 18 && character.age <= 50 && character.isAlive && !character.isInPrison;
 
   return (
-    <div className="space-y-6 h-full overflow-y-auto custom-scrollbar">
+    <div className="space-y-6 max-h-[600px] overflow-y-auto scrollbar-pixel">
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">Children & Family</h2>
         <p className="text-gray-600 dark:text-gray-400">
@@ -182,7 +182,7 @@ const ChildrenTab: React.FC = () => {
                     <div className="stat-bar">
                       <div 
                         className={`h-full rounded-full transition-all duration-500 ${getRelationshipBarColor(child.relationship)}`}
-                        style={{ width: `${Math.round(child.relationship)}%` }}
+                        style={{ width: `${child.relationship}%` }}
                       />
                     </div>
                   </div>

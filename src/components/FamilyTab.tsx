@@ -104,13 +104,13 @@ const FamilyTab: React.FC = () => {
                   </span>
                 </div>
                 <span className={`font-bold ${getClosenessColor(member.closeness)}`}>
-                  {Math.round(member.closeness)}
+                  {member.closeness}
                 </span>
               </div>
               <div className="stat-bar">
                 <div 
                   className={`h-full rounded-full transition-all duration-500 ${getClosenessBarColor(member.closeness)}`}
-                  style={{ width: `${Math.round(member.closeness)}%` }}
+                  style={{ width: `${member.closeness}%` }}
                 />
               </div>
             </div>
