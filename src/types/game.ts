@@ -8,11 +8,11 @@ export interface Character {
     health: number;
     physicalHealth: number;
     mentalHealth: number;
-    addictions: number;
     smarts: number;
     looks: number;
     happiness: number;
     reputation: number;
+    addictions: number;
     money: number;
   };
   family: {
@@ -20,9 +20,8 @@ export interface Character {
     father: FamilyMember;
     siblings: FamilyMember[];
   };
+  money: number;
   isAlive: boolean;
-  deathCause?: string;
-  deathAge?: number;
   createdAt: Date;
   education: {
     currentLevel: EducationLevel;
@@ -34,44 +33,38 @@ export interface Character {
   achievements: Achievement[];
   relationships: Relationship[];
   criminalRecord: CriminalRecord[];
+  criminalStatus: CriminalStatus;
+  prisonRecord: PrisonRecord[];
   riskMeter: number; // 0-100, hidden from player
   isGrounded: boolean;
   groundedUntilAge: number;
   hasJob: boolean;
   jobTitle?: string;
-  jobLevel?: number;
-  jobPerformance?: number;
-  salary?: number;
-  workExperience?: number;
   isPregnant?: boolean;
   pregnancyDueAge?: number;
-  diseases: Disease[];
-  insurance: Insurance;
-  genetics: Genetics;
+  isInPrison?: boolean;
+  prisonReleaseAge?: number;
+  salary?: number;
+  jobLevel?: number;
+  deathCause?: string;
+  deathAge?: number;
   lifeSummary?: LifeSummary;
   college?: {
     isEnrolled: boolean;
-    major?: string;
-    year?: number;
-    gpa?: number;
     tuition?: number;
-    scholarships?: number;
-    loans?: number;
+    name?: string;
+    major?: string;
   };
-  finances?: {
+  diseases: Disease[];
+  insurance: Insurance;
+  genetics: Genetics;
+  finances: {
     savings: number;
     debt: number;
     investments: number;
     monthlyExpenses: number;
-    assets: Asset[];
+    assets: OwnedAsset[];
   };
-  ownedAssets: OwnedAsset[];
-  criminalStatus: CriminalStatus;
-  prisonRecord: PrisonRecord[];
-  isInPrison: boolean;
-  prisonReleaseAge?: number;
-  bailAmount?: number;
-  courtDate?: number;
 }
 
 export interface OwnedAsset {

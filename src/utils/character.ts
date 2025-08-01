@@ -97,6 +97,7 @@ export function generateRandomCharacter(): Character {
       father,
       siblings,
     },
+    money: Math.floor(Math.random() * 1000) + 500, // $500-1500 starting money
     isAlive: true,
     createdAt: new Date(),
     education: {
@@ -109,6 +110,17 @@ export function generateRandomCharacter(): Character {
     achievements: [],
     relationships: [],
     criminalRecord: [],
+    criminalStatus: {
+      wantedLevel: 0,
+      activeWarrants: [],
+      totalCrimesCommitted: 0,
+      timesSentenced: 0,
+      totalJailTime: 0,
+      isOnTrial: false,
+      hasLawyer: false,
+      lawyerQuality: 'public_defender'
+    },
+    prisonRecord: [],
     riskMeter: 0,
     isGrounded: false,
     groundedUntilAge: 0,

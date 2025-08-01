@@ -81,7 +81,7 @@ function App() {
   };
 
   return (
-    <div className="h-screen overflow-hidden transition-colors duration-500">
+    <div className="h-screen transition-colors duration-500">
       <div className="container mx-auto px-4 py-6">
         {/* Header */}
         <div className="text-center mb-8 fade-in-up">

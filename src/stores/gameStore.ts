@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { GameState, Character, GameEvent, StatChange, FamilyMember, Disease } from '../types/game';
+import { GameState, Character, GameEvent, StatChange } from '../types/game';
 import { generateRandomCharacter } from '../utils/character';
 import { generateRandomEvent, applyStatChanges } from '../utils/events';
 import { generateFamilyEvent, interactWithFamily, ageFamilyMembers } from '../utils/family';
@@ -18,7 +18,6 @@ import {
   tryDrugs,
   sneakOut,
   checkPregnancy,
-  updateGroundedStatus,
   generateTeenagerEvent
 } from '../utils/teenager';
 import { checkAchievements } from '../utils/achievements';
@@ -109,7 +108,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     const newAge = character.age + 1;
     let updatedCharacter = { ...character, age: newAge };
-    let newEvents = [...events];
+    const newEvents = [...events];
 
     // Check for prison release first
     const prisonReleaseResult = checkPrisonRelease(updatedCharacter);

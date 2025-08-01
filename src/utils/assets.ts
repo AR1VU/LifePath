@@ -161,7 +161,10 @@ export function purchaseAsset(character: Character, assetId: string): { characte
       ...character.stats,
       money: character.stats.money - finalPrice
     },
-    ownedAssets: [...character.ownedAssets, newAsset]
+    finances: {
+      ...character.finances,
+      assets: [...(character.finances?.assets || []), newAsset]
+    }
   };
 
   const happinessBoost = assetTemplate.type === 'real_estate' ? 15 : 
@@ -182,7 +185,7 @@ export function purchaseAsset(character: Character, assetId: string): { characte
 }
 
 export function sellAsset(character: Character, assetId: string): { character: Character; event: GameEvent } {
-  const asset = character.ownedAssets.find(a => a.id === assetId);
+  const asset = (character.finances?.assets || []).find(a => a.id === assetId);
   if (!asset) {
     throw new Error('Asset not found');
   }
@@ -205,7 +208,10 @@ export function sellAsset(character: Character, assetId: string): { character: C
       ...character.stats,
       money: character.stats.money + salePrice
     },
-    ownedAssets: character.ownedAssets.filter(a => a.id !== assetId)
+    finances: {
+      ...character.finances,
+      assets: (character.finances?.assets || []).filter(a => a.id !== assetId)
+    }
   };
 
   const profit = salePrice - asset.purchasePrice;
@@ -224,7 +230,32 @@ export function sellAsset(character: Character, assetId: string): { character: C
 }
 
 export function updateAssetValues(character: Character): Character {
-  const updatedAssets = character.ownedAssets.map(asset => {
+  // Initialize finances if undefined (for backward compatibility)
+  if (!character.finances) {
+    return {
+      ...character,
+      finances: {
+        savings: 0,
+        debt: 0,
+        investments: 0,
+        monthlyExpenses: 200,
+        assets: []
+      }
+    };
+  }
+
+  // Initialize assets array if undefined
+  if (!character.finances.assets) {
+    return {
+      ...character,
+      finances: {
+        ...character.finances,
+        assets: []
+      }
+    };
+  }
+
+  const updatedAssets = character.finances.assets.map(asset => {
     // Random market fluctuation
     const fluctuation = 0.95 + Math.random() * 0.1; // -5% to +5%
     const newValue = Math.floor(asset.currentValue * fluctuation);
@@ -237,12 +268,15 @@ export function updateAssetValues(character: Character): Character {
 
   return {
     ...character,
-    ownedAssets: updatedAssets
+    finances: {
+      ...character.finances,
+      assets: updatedAssets
+    }
   };
 }
 
 export function calculateNetWorth(character: Character): number {
-  const assetValue = character.ownedAssets.reduce((total, asset) => total + asset.currentValue, 0);
+  const assetValue = (character.finances?.assets || []).reduce((total, asset) => total + asset.currentValue, 0);
   const cash = character.stats.money;
   const savings = character.finances?.savings || 0;
   const investments = character.finances?.investments || 0;
@@ -252,7 +286,7 @@ export function calculateNetWorth(character: Character): number {
 }
 
 export function getMonthlyAssetExpenses(character: Character): number {
-  return character.ownedAssets.reduce((total, asset) => {
+  return (character.finances?.assets || []).reduce((total, asset) => {
     return total + (asset.monthlyMaintenance || 0);
   }, 0);
 }

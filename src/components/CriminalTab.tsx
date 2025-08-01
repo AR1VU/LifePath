@@ -9,6 +9,21 @@ const CriminalTab: React.FC = () => {
 
   if (!character) return null;
 
+  // Provide default criminal status if undefined (for backward compatibility)
+  const criminalStatus = character.criminalStatus || {
+    wantedLevel: 0,
+    activeWarrants: [],
+    totalCrimesCommitted: 0,
+    timesSentenced: 0,
+    totalJailTime: 0,
+    isOnTrial: false,
+    hasLawyer: false,
+    lawyerQuality: 'public_defender' as const
+  };
+
+  // Provide default prison record if undefined (for backward compatibility)  
+  const prisonRecord = character.prisonRecord || [];
+
   const handleCommitCrime = (crimeId: string) => {
     try {
       const result = commitCrime(character, crimeId);
@@ -134,26 +149,26 @@ const CriminalTab: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-4 text-center">
-            <div className={`text-2xl font-bold ${getWantedLevelColor(character.criminalStatus.wantedLevel)}`}>
-              {getWantedLevelStars(character.criminalStatus.wantedLevel)}
+            <div className={`text-2xl font-bold ${getWantedLevelColor(criminalStatus.wantedLevel)}`}>
+              {getWantedLevelStars(criminalStatus.wantedLevel)}
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">Wanted Level</div>
           </div>
           <div className="bg-orange-50 dark:bg-orange-900/20 rounded-xl p-4 text-center">
             <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
-              {character.criminalStatus.totalCrimesCommitted}
+              {criminalStatus.totalCrimesCommitted}
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">Crimes Committed</div>
           </div>
           <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-4 text-center">
             <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-              {character.criminalStatus.timesSentenced}
+              {criminalStatus.timesSentenced}
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">Times Sentenced</div>
           </div>
           <div className="bg-gray-50 dark:bg-gray-900/20 rounded-xl p-4 text-center">
             <div className="text-2xl font-bold text-gray-600 dark:text-gray-400">
-              {Math.ceil(character.criminalStatus.totalJailTime)}
+              {Math.ceil(criminalStatus.totalJailTime)}
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">Years in Prison</div>
           </div>
@@ -184,7 +199,7 @@ const CriminalTab: React.FC = () => {
             </div>
             <div className="bg-orange-50 dark:bg-orange-900/20 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
-                {character.age - (character.prisonRecord[character.prisonRecord.length - 1]?.enteredAt || character.age)}
+                {character.age - (prisonRecord[prisonRecord.length - 1]?.enteredAt || character.age)}
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400">Years Served</div>
             </div>
