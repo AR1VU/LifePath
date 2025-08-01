@@ -6,7 +6,6 @@ const ActionMenu: React.FC = () => {
   const { 
     character, 
     isPlaying, 
-    startNewLife, 
     resetGame,
     startDating,
     getFirstJob,
@@ -30,17 +29,7 @@ const ActionMenu: React.FC = () => {
       </div>
       
       <div className="space-y-4">
-        {!isPlaying ? (
-          <button
-            onClick={startNewLife}
-            className="w-full flex items-center justify-center space-x-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-          >
-            <div className="p-2 bg-white/20 rounded-lg">
-              <Play className="w-5 h-5" />
-            </div>
-            <span className="text-lg">Start New Life</span>
-          </button>
-        ) : (
+        {isPlaying && (
           <>
             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200/50 dark:border-blue-800/50 rounded-xl p-5">
               <div className="flex items-center space-x-3 text-blue-700 dark:text-blue-300 mb-2">
@@ -165,6 +154,16 @@ const ActionMenu: React.FC = () => {
             <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-3 text-center">
               <div className="text-2xl font-bold text-gray-800 dark:text-white">{useGameStore.getState().events.length}</div>
               <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">Life Events</div>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4 mt-4">
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-3 text-center">
+              <div className="text-2xl font-bold text-gray-800 dark:text-white">{character.children.length}</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">Children</div>
+            </div>
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-3 text-center">
+              <div className="text-2xl font-bold text-gray-800 dark:text-white">{character.legacyScore || 0}</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">Legacy Score</div>
             </div>
           </div>
           <div className="mt-4 text-center">

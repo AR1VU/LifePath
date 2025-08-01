@@ -57,30 +57,37 @@ function generateFamilyMember(
   };
 }
 
-export function generateRandomCharacter(): Character {
-  const gender = Math.random() < 0.5 ? 'male' : 'female';
-  const firstName = FIRST_NAMES[gender][Math.floor(Math.random() * FIRST_NAMES[gender].length)];
-  const lastName = LAST_NAMES[Math.floor(Math.random() * LAST_NAMES.length)];
+export function generateRandomCharacter(customName?: string, customGender?: 'male' | 'female', customCountry?: string): Character {
+  const gender = customGender || (Math.random() < 0.5 ? 'male' : 'female');
+  const firstName = customName ? customName.split(' ')[0] : FIRST_NAMES[gender][Math.floor(Math.random() * FIRST_NAMES[gender].length)];
+  const lastName = customName && customName.split(' ').length > 1 ? customName.split(' ').slice(1).join(' ') : LAST_NAMES[Math.floor(Math.random() * LAST_NAMES.length)];
+  const fullName = customName || `${firstName} ${lastName}`;
   
   // Generate family members
-  const mother = generateFamilyMember('mother', lastName, 0);
-  const father = generateFamilyMember('father', lastName, 0);
+  const mother = generateFamilyMember('mother', lastName.split(' ').pop() || lastName, 0);
+  const father = generateFamilyMember('father', lastName.split(' ').pop() || lastName, 0);
   
   const siblings: FamilyMember[] = [];
   const siblingCount = Math.floor(Math.random() * 4); // 0-3 siblings
   
   for (let i = 0; i < siblingCount; i++) {
-    siblings.push(generateFamilyMember('sibling', lastName, 0));
+    siblings.push(generateFamilyMember('sibling', lastName.split(' ').pop() || lastName, 0));
   }
 
   const genetics = generateGenetics();
 
   return {
     id: crypto.randomUUID(),
-    name: `${firstName} ${lastName}`,
+    name: fullName,
     gender,
     age: 0,
-    country: COUNTRIES[Math.floor(Math.random() * COUNTRIES.length)],
+    country: customCountry || COUNTRIES[Math.floor(Math.random() * COUNTRIES.length)],
+    children: [],
+    will: {
+      beneficiaries: [],
+      charityDonations: []
+    },
+    legacyScore: 0,
     stats: {
       health: Math.floor(Math.random() * 50) + 50, // 50-100
       physicalHealth: Math.floor(Math.random() * 30) + 70, // 70-100
@@ -97,7 +104,6 @@ export function generateRandomCharacter(): Character {
       father,
       siblings,
     },
-    money: Math.floor(Math.random() * 1000) + 500, // $500-1500 starting money
     isAlive: true,
     createdAt: new Date(),
     education: {
@@ -110,17 +116,6 @@ export function generateRandomCharacter(): Character {
     achievements: [],
     relationships: [],
     criminalRecord: [],
-    criminalStatus: {
-      wantedLevel: 0,
-      activeWarrants: [],
-      totalCrimesCommitted: 0,
-      timesSentenced: 0,
-      totalJailTime: 0,
-      isOnTrial: false,
-      hasLawyer: false,
-      lawyerQuality: 'public_defender'
-    },
-    prisonRecord: [],
     riskMeter: 0,
     isGrounded: false,
     groundedUntilAge: 0,
@@ -140,7 +135,20 @@ export function generateRandomCharacter(): Character {
       investments: 0,
       monthlyExpenses: 200,
       assets: []
-    }
+    },
+    ownedAssets: [],
+    criminalStatus: {
+      wantedLevel: 0,
+      activeWarrants: [],
+      totalCrimesCommitted: 0,
+      timesSentenced: 0,
+      totalJailTime: 0,
+      isOnTrial: false,
+      hasLawyer: false,
+      lawyerQuality: 'public_defender'
+    },
+    prisonRecord: [],
+    isInPrison: false
   };
 }
 

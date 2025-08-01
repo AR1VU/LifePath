@@ -30,21 +30,21 @@ const LifeLog: React.FC = () => {
   };
 
   return (
-    <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-6 h-full flex flex-col">
+    <div className="glass-card rounded-2xl premium-shadow dark:premium-shadow-dark p-4 sm:p-6 h-full flex flex-col">
       <div className="flex items-center space-x-3 mb-6">
         <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl">
           <span className="text-white text-lg">📖</span>
         </div>
-        <h3 className="text-xl font-bold text-gray-800 dark:text-white">Life Story</h3>
+        <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-white">Life Story</h3>
       </div>
       
-      <div className="flex-1 overflow-y-auto space-y-4 custom-scrollbar pr-2">
+      <div className="flex-1 overflow-y-auto space-y-3 sm:space-y-4 custom-scrollbar pr-1 sm:pr-2">
         {events.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="w-24 h-24 mx-auto bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 rounded-full flex items-center justify-center mb-4">
+          <div className="text-center py-8 sm:py-16">
+            <div className="w-16 h-16 sm:w-24 sm:h-24 mx-auto bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 rounded-full flex items-center justify-center mb-4">
               <span className="text-3xl">🌟</span>
             </div>
-            <p className="text-gray-500 dark:text-gray-400 text-base font-medium">
+            <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base font-medium">
               Your story begins here
             </p>
             <p className="text-gray-400 dark:text-gray-500 text-sm mt-2">
@@ -52,9 +52,9 @@ const LifeLog: React.FC = () => {
             </p>
             <button
               onClick={startNewLife}
-              className="mt-4 flex items-center justify-center space-x-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg mx-auto"
+              className="mt-4 flex items-center justify-center space-x-2 sm:space-x-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg mx-auto text-sm sm:text-base"
             >
-              <Play className="w-5 h-5" />
+              <Play className="w-4 h-4 sm:w-5 sm:h-5" />
               <span>Start New Life</span>
             </button>
           </div>
@@ -62,14 +62,14 @@ const LifeLog: React.FC = () => {
           events.map((event) => (
             <div
               key={event.id}
-              className={`p-4 rounded-2xl transition-all duration-300 hover:shadow-lg hover:scale-[1.01] fade-in-up ${getEventTypeColor(event.type)}`}
+              className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl transition-all duration-300 hover:shadow-lg hover:scale-[1.01] fade-in-up ${getEventTypeColor(event.type)}`}
             >
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center space-x-3">
                   <span className="text-lg">{getEventIcon(event.type)}</span>
-                  <h4 className="font-bold text-gray-800 dark:text-white text-base">{event.title}</h4>
+                  <h4 className="font-bold text-gray-800 dark:text-white text-sm sm:text-base break-words flex-1">{event.title}</h4>
                 </div>
-                <div className="flex flex-col items-end">
+                <div className="flex flex-col items-end flex-shrink-0 ml-2">
                   <span className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">
                     Age
                   </span>
@@ -78,16 +78,16 @@ const LifeLog: React.FC = () => {
                   </span>
                 </div>
               </div>
-              <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-3 text-sm">
+              <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-3 text-xs sm:text-sm">
                 {event.description}
               </p>
               {Object.keys(event.statChanges).length > 0 && (
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1 sm:gap-2">
                   {Object.entries(event.statChanges).map(([stat, change]) => (
                     change !== 0 && (
                       <span
                         key={stat}
-                        className={`text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wide ${
+                        className={`text-xs px-2 sm:px-3 py-1 rounded-full font-bold uppercase tracking-wide ${
                           change! > 0
                             ? 'bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200'
                             : 'bg-red-200 text-red-800 dark:bg-red-800 dark:text-red-200'

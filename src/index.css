@@ -167,11 +167,48 @@
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
   }
   
   .floating-button {
     @apply bottom-4 right-4 py-3 px-5 text-sm;
+  }
+  
+  .glass-card {
+    @apply mx-2;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .container {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  .glass-card {
+    @apply mx-1 p-4;
+  }
+  
+  .floating-button {
+    @apply bottom-3 right-3 py-2 px-4 text-xs;
+  }
+}
+
+/* Hide scrollbar for tab navigation */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Responsive breakpoint for extra small screens */
+@media (min-width: 475px) {
+  .xs\:inline {
+    display: inline;
   }
 }

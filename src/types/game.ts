@@ -4,15 +4,18 @@ export interface Character {
   gender: 'male' | 'female';
   age: number;
   country: string;
+  children: Child[];
+  will: Will;
+  legacyScore: number;
   stats: {
     health: number;
     physicalHealth: number;
     mentalHealth: number;
+    addictions: number;
     smarts: number;
     looks: number;
     happiness: number;
     reputation: number;
-    addictions: number;
     money: number;
   };
   family: {
@@ -20,8 +23,9 @@ export interface Character {
     father: FamilyMember;
     siblings: FamilyMember[];
   };
-  money: number;
   isAlive: boolean;
+  deathCause?: string;
+  deathAge?: number;
   createdAt: Date;
   education: {
     currentLevel: EducationLevel;
@@ -33,38 +37,85 @@ export interface Character {
   achievements: Achievement[];
   relationships: Relationship[];
   criminalRecord: CriminalRecord[];
-  criminalStatus: CriminalStatus;
-  prisonRecord: PrisonRecord[];
   riskMeter: number; // 0-100, hidden from player
   isGrounded: boolean;
   groundedUntilAge: number;
   hasJob: boolean;
   jobTitle?: string;
+  jobLevel?: number;
+  jobPerformance?: number;
+  salary?: number;
+  workExperience?: number;
   isPregnant?: boolean;
   pregnancyDueAge?: number;
-  isInPrison?: boolean;
-  prisonReleaseAge?: number;
-  salary?: number;
-  jobLevel?: number;
-  deathCause?: string;
-  deathAge?: number;
-  lifeSummary?: LifeSummary;
-  college?: {
-    isEnrolled: boolean;
-    tuition?: number;
-    name?: string;
-    major?: string;
-  };
   diseases: Disease[];
   insurance: Insurance;
   genetics: Genetics;
-  finances: {
+  lifeSummary?: LifeSummary;
+  college?: {
+    isEnrolled: boolean;
+    major?: string;
+    year?: number;
+    gpa?: number;
+    tuition?: number;
+    scholarships?: number;
+    loans?: number;
+  };
+  finances?: {
     savings: number;
     debt: number;
     investments: number;
     monthlyExpenses: number;
-    assets: OwnedAsset[];
+    assets: Asset[];
   };
+  ownedAssets: OwnedAsset[];
+  criminalStatus: CriminalStatus;
+  prisonRecord: PrisonRecord[];
+  isInPrison: boolean;
+  prisonReleaseAge?: number;
+  bailAmount?: number;
+  courtDate?: number;
+}
+
+export interface Child {
+  id: string;
+  name: string;
+  gender: 'male' | 'female';
+  age: number;
+  bornAt: number; // parent's age when child was born
+  stats: {
+    health: number;
+    smarts: number;
+    looks: number;
+    happiness: number;
+  };
+  relationship: number; // 0-100 relationship with parent
+  isAlive: boolean;
+  achievements: string[];
+  currentActivity: string;
+  genetics: Partial<Genetics>;
+  otherParent?: string; // name of other parent
+}
+
+export interface Will {
+  beneficiaries: WillBeneficiary[];
+  charityDonations: CharityDonation[];
+  lastUpdated?: number; // age when last updated
+}
+
+export interface WillBeneficiary {
+  id: string;
+  name: string;
+  relationship: string;
+  percentage: number;
+  specificAssets: string[];
+}
+
+export interface CharityDonation {
+  id: string;
+  charityName: string;
+  amount: number;
+  percentage: number;
 }
 
 export interface OwnedAsset {

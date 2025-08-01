@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { GameState, Character, GameEvent, StatChange } from '../types/game';
+import { GameState, Character, GameEvent, StatChange, FamilyMember, Disease } from '../types/game';
 import { generateRandomCharacter } from '../utils/character';
 import { generateRandomEvent, applyStatChanges } from '../utils/events';
 import { generateFamilyEvent, interactWithFamily, ageFamilyMembers } from '../utils/family';
@@ -7,6 +7,9 @@ import { generateSchoolEvent, updateEducationProgress } from '../utils/education
 import { generateRandomDisease, checkForDeath, generateLifeSummary, generateFuneralEvents } from '../utils/health';
 import { updateAssetValues, getMonthlyAssetExpenses } from '../utils/assets';
 import { generatePrisonEvent, checkPrisonRelease } from '../utils/criminal';
+import { ageChildren, generateChildEvent } from '../utils/children';
+import { applyAgingEffects } from '../utils/aging';
+import { calculateLegacyScore } from '../utils/legacy';
 import { 
   startDating as startDatingUtil, 
   breakUp as breakUpUtil, 
@@ -18,6 +21,7 @@ import {
   tryDrugs,
   sneakOut,
   checkPregnancy,
+  updateGroundedStatus,
   generateTeenagerEvent
 } from '../utils/teenager';
 import { checkAchievements } from '../utils/achievements';
@@ -27,9 +31,9 @@ interface GameStore extends GameState {
   statChanges: StatChange[];
   
   // Actions
-  startNewLife: () => void;
+  startNewLife: (name?: string, gender?: 'male' | 'female', country?: string) => void;
   ageUp: () => void;
-  setCurrentTab: (tab: GameState['currentTab']) => void;
+  setCurrentTab: (tab: 'stats' | 'family' | 'children' | 'education' | 'career' | 'relationships' | 'achievements' | 'health' | 'assets' | 'criminal') => void;
   interactWithFamilyMember: (familyMemberId: string, action: 'talk' | 'compliment' | 'insult' | 'ask_money') => void;
   
   // Teenager actions
@@ -74,8 +78,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   ...initialState,
   statChanges: [],
 
-  startNewLife: () => {
-    const character = generateRandomCharacter();
+  startNewLife: (name?: string, gender?: 'male' | 'female', country?: string) => {
+    const character = generateRandomCharacter(name, gender, country);
     const birthEvent: GameEvent = {
       id: crypto.randomUUID(),
       age: 0,
@@ -108,7 +112,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     const newAge = character.age + 1;
     let updatedCharacter = { ...character, age: newAge };
-    const newEvents = [...events];
+    let newEvents = [...events];
 
     // Check for prison release first
     const prisonReleaseResult = checkPrisonRelease(updatedCharacter);
@@ -123,9 +127,15 @@ export const useGameStore = create<GameStore>((set, get) => ({
     // Age family members
     updatedCharacter = ageFamilyMembers(updatedCharacter);
 
+    // Age children
+    updatedCharacter = ageChildren(updatedCharacter);
     // Update education level
     updatedCharacter = updateEducationProgress(updatedCharacter);
 
+    // Apply aging effects
+    const agingResult = applyAgingEffects(updatedCharacter);
+    updatedCharacter = agingResult.character;
+    newEvents.push(...agingResult.events);
     // Check for new diseases
     const newDisease = generateRandomDisease(updatedCharacter);
     if (newDisease) {
@@ -177,6 +187,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
       }
     }
 
+    // Calculate legacy score
+    updatedCharacter.legacyScore = calculateLegacyScore(updatedCharacter, newEvents);
     // Check for death
     const deathCheck = checkForDeath(updatedCharacter);
     if (deathCheck.isDead) {
@@ -278,6 +290,18 @@ export const useGameStore = create<GameStore>((set, get) => ({
       });
     }
 
+    // Generate children events
+    const childEvent = generateChildEvent(updatedCharacter);
+    if (childEvent) {
+      updatedCharacter = applyStatChanges(updatedCharacter, childEvent.statChanges);
+      newEvents.push(childEvent);
+
+      Object.entries(childEvent.statChanges).forEach(([stat, change]) => {
+        if (typeof change === 'number' && change !== 0) {
+          get().addStatChange(stat as keyof Character['stats'], change);
+        }
+      });
+    }
     // Generate school events
     const schoolEvent = generateSchoolEvent(updatedCharacter);
     if (schoolEvent) {
